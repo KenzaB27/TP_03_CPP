@@ -72,8 +72,18 @@ public:
 //------------------------------------------------------------------ Protégé
 
 protected:
-
-//----------------------------------------------------- Attributs protégés
+//---------------------------------------------------------- Methodes protegees
+	static char * toUpper ( char * chaine );
+	// Mode d'emploi :
+	//	Permet de creer une copie de la chaine de caractere qui est en
+	//		majuscule.
+	//	chaine : la chaine de caractere a copier en majuscule
+	//	retour : copie de la chaine en entree, en majuscule.
+	//			La suppression du pointeur est a la charge du client
+	// Contrat :
+	//	Format chaine de caractere en entree
+	 
+//---------------------------------------------------------- Attributs protégés
      char* villeDepart;
      char* villeArrive;
      char* moyenTransport;

@@ -120,16 +120,20 @@ void Catalogue::RechercheAvancee(){
 
 void Catalogue::AjoutSimple(void)
 {
-	char depart [100];
-	char arrivee [100];
-	char mt [100];
+	const int TAILLE_CHAR = 100;
+	char depart [TAILLE_CHAR];
+	char arrivee [TAILLE_CHAR];
+	char mt [TAILLE_CHAR];
 
 	cout << "Quel est le depart du trajet" << endl;
-	cin >> depart;
+	cin.getline(depart, TAILLE_CHAR);
+	cin.ignore();	//On ignore jusqu'a la fin de ligne
 	cout << "Quelle est l'arrivee du trajet" << endl;
-	cin >> arrivee;
+	cin.getline(arrivee, TAILLE_CHAR);
+	cin.ignore();
 	cout << "Quel est le moyen de transport employe ?" << endl;
-	cin >> mt;
+	cin.getline(mt, TAILLE_CHAR);
+	cin.ignore();
 
 	TrajetSimple* t (new TrajetSimple(depart, arrivee, mt));
 
