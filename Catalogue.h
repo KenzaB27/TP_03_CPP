@@ -72,6 +72,15 @@ void freeTab(char ** tab , int size);
 // Mode d'emploi : permet de libérer les tableaux de chaines de caractères utilisés
 //                 pour stocker les variables récupérées du flux cin
 
+static void saisirTexte ( char * destination, unsigned int tailleMax );
+// Mode d'emploi
+//	Permet de saisir du texte a partir de l'entree standard, empeche
+//		l'utilisation des caracteres reserves a la sauvegarde (_)
+//	destination : la destination ou le texte sera stocke
+//	tailleMax : la taille maximale de l'entree
+// Contrat :
+//	Aucun contrat.
+
 //----------------------------------------------------- Attributs protégés
   int choix1 ; //Choix du premier Catalogue
   int choix2 ; //choix du sous Catalogue d'Ajout de trajets

@@ -91,9 +91,9 @@ void Catalogue::RechercheAvancee()
 	char arrivee [ TAILLE_CHAR ];
 
 	cout << "Bonjour, quelle est votre destination de depart ? " << endl;
-	cin.getline ( depart, TAILLE_CHAR );
+	saisirTexte( depart, TAILLE_CHAR );
 	cout << "Et votre ville d'arrivee" << endl;
-	cin.getline ( arrivee, TAILLE_CHAR );
+	saisirTexte ( arrivee, TAILLE_CHAR );
 
 	cout << "\n" << "\n" << "Resultats de la requete : " << endl;
 
@@ -130,11 +130,11 @@ void Catalogue::AjoutSimple(void)
 	char mt [TAILLE_CHAR];
 
 	cout << "Quel est le depart du trajet" << endl;
-	cin.getline(depart, TAILLE_CHAR);
+	saisirTexte(depart, TAILLE_CHAR);
 	cout << "Quelle est l'arrivee du trajet" << endl;
-	cin.getline(arrivee, TAILLE_CHAR);
+	saisirTexte(arrivee, TAILLE_CHAR);
 	cout << "Quel est le moyen de transport employe ?" << endl;
-	cin.getline(mt, TAILLE_CHAR);
+	saisirTexte(mt, TAILLE_CHAR);
 
 	TrajetSimple* t (new TrajetSimple(depart, arrivee, mt));
 
@@ -200,7 +200,7 @@ void Catalogue::AjoutCompose(void)
 			( ( i + 1 > 1 ) ? "eme" : "ere" )
 			<< " ville : " << endl;
 		tabVille[i] = new char[20];
-		cin.getline( tabVille[i], 20 );
+		saisirTexte( tabVille[i], 20 );
 
 		if(i != nbVilles - 1) tabMT[i]=new char[20];
 		//On a moins de moyens de transport que de villes
@@ -208,7 +208,7 @@ void Catalogue::AjoutCompose(void)
 		{
 			cout << "Quel est le moyen de transport entre " << tabVille[i - 1] <<
 				" et " << tabVille[i] << " ?" << endl;
-			cin.getline( tabMT[i-1], 20 );
+			saisirTexte( tabMT[i-1], 20 );
 			//Le moyen de transport est stocke e l'adresse de la ville d'arrivee,
 			// aucun moyen de transport en 0
 
@@ -255,10 +255,10 @@ void Catalogue::Rechercher(void)
 	char arrivee[TAILLE_CHAR];
 	int count = 0 ;
 	cout << "Bonjour, quelle est votre destination de depart ? " << endl;
-	cin.getline( depart, TAILLE_CHAR );
+	saisirTexte( depart, TAILLE_CHAR );
 
 	cout << "Et votre ville d'arrivee" << endl;
-	cin.getline( arrivee, TAILLE_CHAR );
+	saisirTexte( arrivee, TAILLE_CHAR );
 
 	cout << "\n" << "\n" << "Resultats de la requete : " << endl;
 
@@ -391,3 +391,24 @@ void Catalogue::freeTab ( char ** tab , int size )
 	}
 	delete [] tab ;
 }//----- Fin de freeTab
+
+void Catalogue::saisirTexte ( char * destination, unsigned int tailleMax )
+{
+	bool saisieJuste = false;
+	char * c;
+	do
+	{
+		cin.getline(destination, tailleMax );
+
+		for ( c = destination; *c != '\0' && *c!='_'; c++ );
+
+		if(*c=='\0')
+		{
+			saisieJuste = true;
+		}
+		else
+		{
+			cout << "Le caractere '_' est interdit !" << endl;
+		}
+	} while ( !saisieJuste );
+}
