@@ -10,6 +10,9 @@
 #if ! defined ( Trajet_H )
 #define Trajet_H
 
+//-------------------------------------------------------------------- Includes
+#include <istream>
+
 //------------------------------------------------------------------------
 // Rôle de la classe <Trajet>
 // Implémente un trajet entre uneVilleDepart et uneVilleArrive
@@ -54,6 +57,8 @@ public:
     //
     // Contrat : Aucun
     //
+
+	virtual bool Lecture ( )
 
 //-------------------------------------------- Constructeurs - destructeur
 
