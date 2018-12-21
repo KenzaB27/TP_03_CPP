@@ -87,14 +87,13 @@ void Catalogue::RechercheEnProfondeur(char* Recherche, TrajetCompose* branche, T
 
 void Catalogue::RechercheAvancee()
 {
-	const int TAILLE_CHAR = 100;
-	char depart [];
-	char arrivee [TAILLE_CHAR];
+	char depart [ TAILLE_CHAR ];
+	char arrivee [ TAILLE_CHAR ];
 
 	cout << "Bonjour, quelle est votre destination de depart ? " << endl;
-	cin.getline (depart, TAILLE_CHAR );
+	cin.getline ( depart, TAILLE_CHAR );
 	cout << "Et votre ville d'arrivee" << endl;
-	cin >> arrivee;
+	cin.getline ( arrivee, TAILLE_CHAR );
 
 	cout << "\n" << "\n" << "Resultats de la requete : " << endl;
 
@@ -126,20 +125,16 @@ void Catalogue::RechercheAvancee()
 
 void Catalogue::AjoutSimple(void)
 {
-	const int TAILLE_CHAR = TAILLE_CHAR;
 	char depart [TAILLE_CHAR];
 	char arrivee [TAILLE_CHAR];
 	char mt [TAILLE_CHAR];
 
 	cout << "Quel est le depart du trajet" << endl;
 	cin.getline(depart, TAILLE_CHAR);
-	cin.ignore();	//On ignore jusqu'a la fin de ligne
 	cout << "Quelle est l'arrivee du trajet" << endl;
 	cin.getline(arrivee, TAILLE_CHAR);
-	cin.ignore();
 	cout << "Quel est le moyen de transport employe ?" << endl;
 	cin.getline(mt, TAILLE_CHAR);
-	cin.ignore();
 
 	TrajetSimple* t (new TrajetSimple(depart, arrivee, mt));
 
@@ -176,14 +171,24 @@ void Catalogue::AjoutSimple(void)
 void Catalogue::AjoutCompose(void)
 {
 	int nbVilles = 0;
-	cout <<"Combien d'etapes comporte votre trajet (nombre de villes total)" << endl;
-	cin >> nbVilles;
+	cout << "Combien d'etapes comporte votre trajet " <<
+		"(nombre de villes total)" << endl;
 
-	while(nbVilles <= 2) //On ne prend en compte que les trajets composés
+	while ( nbVilles <= 2 )
 	{
-		cout << "Erreur : Le nombre d'etapes minimum est 3" << endl;
-		cout << "Combien d'étapes comporte votre trajet ? (nombre de villes total)" << endl;
-		cin >> nbVilles;
+		while( ! ( cin >> nbVilles) )
+		{
+			cin.clear();
+			cin.ignore(1000, '\n');
+			cout << "Veuillez rentrer un nombre !" << endl;
+		}
+		cin.ignore();	//Probleme du \n avec cin >>
+
+		if ( nbVilles <= 2 )
+		{
+			cout << "Erreur : Le nombre d'etapes minimum est 3 !"
+				<< endl;
+		}
 	}
 
 	char** tabVille (new char *[nbVilles]);
@@ -191,9 +196,11 @@ void Catalogue::AjoutCompose(void)
 	TabTrajet *tabTS (new TabTrajet());
 	for (int i = 0; i < nbVilles; i++)
 	{
-		cout << "Rentrer la " << (i+1) << "eme ville : " << endl;
+		cout << "Rentrer la " << (i+1) << 
+			( ( i + 1 > 1 ) ? "eme" : "ere" )
+			<< " ville : " << endl;
 		tabVille[i] = new char[20];
-		cin >> tabVille[i];
+		cin.getline( tabVille[i], 20 );
 
 		if(i != nbVilles - 1) tabMT[i]=new char[20];
 		//On a moins de moyens de transport que de villes
@@ -201,7 +208,7 @@ void Catalogue::AjoutCompose(void)
 		{
 			cout << "Quel est le moyen de transport entre " << tabVille[i - 1] <<
 				" et " << tabVille[i] << " ?" << endl;
-			cin >> tabMT[i-1];
+			cin.getline( tabMT[i-1], 20 );
 			//Le moyen de transport est stocke e l'adresse de la ville d'arrivee,
 			// aucun moyen de transport en 0
 
@@ -238,8 +245,8 @@ void Catalogue::AjoutCompose(void)
 		delete tc;
 	}
 
-	freeTab (tabMT , nbVilles-1);
-	freeTab ( tabVille , nbVilles) ;
+	freeTab ( tabMT , nbVilles - 1 );
+	freeTab ( tabVille , nbVilles ) ;
 } //----- Fin de AjoutCompose
 
 void Catalogue::Rechercher(void)
@@ -248,9 +255,10 @@ void Catalogue::Rechercher(void)
 	char arrivee[TAILLE_CHAR];
 	int count = 0 ;
 	cout << "Bonjour, quelle est votre destination de depart ? " << endl;
-	cin >> depart;
+	cin.getline( depart, TAILLE_CHAR );
+
 	cout << "Et votre ville d'arrivee" << endl;
-	cin >> arrivee;
+	cin.getline( arrivee, TAILLE_CHAR );
 
 	cout << "\n" << "\n" << "Resultats de la requete : " << endl;
 
@@ -277,7 +285,14 @@ void Catalogue::MenuTrajet(void) {
 		cout << "1. Simple" << endl;
 		cout << "2. Compose" << endl;
 		cout << "3. Retour au Catalogue" << endl;
-		cin >> choix2;
+
+		if( !( cin >> choix2 ))
+		{
+			cin.clear();
+			cin.ignore(1000,'\n');
+			cout << "Veuillez saisir un chiffre !" << endl;
+		}
+		cin.ignore();
 
 		switch (choix2)
 		{
@@ -312,7 +327,14 @@ void Catalogue::MenuCatalogue(void)
 		cout << "3. Rechercher un parcours" << endl;
 		cout << "4. Rechercher un parcours - Recherche avancee" << endl;
 		cout << "5. Quitter" << endl;
-		cin >> choix1;
+		
+		if( !( cin >> choix1 ) )
+		{
+			cin.clear();
+			cin.ignore(1000,'\n');
+			cout << "Veuillez saisir un chiffre !" << endl;
+		}
+		cin.ignore();
 
 		switch (choix1)
 		{
