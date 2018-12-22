@@ -62,28 +62,7 @@ public :
     //
 
 
-    virtual string DescriptionTrajet(void)=0 ; 
-    // Mode d'emploi : 
-    //
-    // Contrat : Aucun
-    //
-
-
-    bool VerifVilleDepart(char * villeDepart); 
-    // Mode d'emploi : 
-    //
-    // Contrat : Aucun
-    //
-
-
-    bool VerifVilleArrive(char * villeArrive); 
-    // Mode d'emploi : 
-    //
-    // Contrat : Aucun
-    //
-
-
-	//virtual bool Lecture ( );
+//  virtual bool Lecture ( );
 
 
     //----------------------------------------------- Surcharge d'operateurs --

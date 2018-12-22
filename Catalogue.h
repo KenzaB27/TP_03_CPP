@@ -63,11 +63,6 @@ public :
     // Mode d'emploi : implémente l'interface principale du catalogue
 
 
-	void Ecriture(string nomFichier);
-    // Mode d'emploi : 
-    //
-
-
     //----------------------------------------------- Surcharge d'operateurs --
     //------------------------------------------ Constructeurs - Destructeur --
     Catalogue (void);

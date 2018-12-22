@@ -376,22 +376,6 @@ void Catalogue::MenuCatalogue(void)
 }//----- Fin de mainCatalogue
 
 
-void Ecriture(string nomFichier , int option ){
-
-	ofstream fichier(nomFichier, ios::out | (option==1)? ios::trunc : ios::app); //ouverture en écriture avec effacement du fichier ouvert
-	if (fichier)
-		{
-			for (int i =0 ; i < liste.GetNbTrajets(); i++)
-			{
-				fichier
-
-			}
-
-		}
-
-}//----- Fin de Ecriture
-
-
 //--------------------------------------------------- Surcharge d'operateurs --
 //---------------------------------------------- Constructeurs - Destructeur --
 Catalogue::Catalogue (void)
