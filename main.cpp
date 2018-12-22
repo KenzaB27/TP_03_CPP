@@ -1,4 +1,3 @@
-
 #include "Catalogue.h"
 
 int main()

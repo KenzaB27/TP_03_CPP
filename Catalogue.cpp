@@ -1,33 +1,30 @@
-/*************************************************************************
-  Catalogue  -  description
-  -------------------
-  début                : $DATE$
-copyright            : (C) $YEAR$ par $AUTHOR$
-e-mail               : $EMAIL$
- *************************************************************************/
+/******************************************************************************
+ 					Catalogue  -
+  				-------------------
+    debut                : 	Decembre 2018
+    copyright            : 	(C) 2018 par K. BOUZID et PY GENEST
+    e-mail               : 	kenza.bouzid@insa-lyon.fr
+							pierre-yves.genest@insa-lyon.fr
+******************************************************************************/
+//--------- Réalisation de la classe <Catalogue> (fichier Catalogue.cpp) ------
 
-//---------- Réalisation de la classe <Catalogue> (fichier Catalogue.cpp) ------
-
-//---------------------------------------------------------------- INCLUDE
-
-//-------------------------------------------------------- Include système
+////////////////////////////////////////////////////////////////////// INCLUDES
+//--------------------------------------------------------- Includes systeme --
 #include <cstring>
 #include <iostream>
-using namespace std;
 
-//------------------------------------------------------ Include personnel
+using namespace std;
+//------------------------------------------------------ Includes personnels --
 #include "Catalogue.h"
 #include "TabTrajet.h"
 #include "Trajet.h"
 #include "TrajetSimple.h"
 #include "TrajetCompose.h"
-
-//------------------------------------------------------------------ Constantes
+//------------------------------------------------------------------ CONSTANTES
 const unsigned int TAILLE_CHAR = 100;
 
 //////////////////////////////////////////////////////////////////////// PUBLIC
-//---------------------------------------------------------- Méthodes publiques
-
+//------------------------------------------------------- Methodes publiques --
 void Catalogue::RechercheEnProfondeur(char* Recherche, TrajetCompose* branche, TabTrajet* res)
 {
 	//Recherches des trajets non etudiés, pas dans le TC de la branche d'avant donc
@@ -122,7 +119,6 @@ void Catalogue::RechercheAvancee()
 }
 
 
-
 void Catalogue::AjoutSimple(void)
 {
 	char depart [TAILLE_CHAR];
@@ -167,6 +163,7 @@ void Catalogue::AjoutSimple(void)
 	}
 
 } //----- Fin de AjoutSimple
+
 
 void Catalogue::AjoutCompose(void)
 {
@@ -249,6 +246,7 @@ void Catalogue::AjoutCompose(void)
 	freeTab ( tabVille , nbVilles ) ;
 } //----- Fin de AjoutCompose
 
+
 void Catalogue::Rechercher(void)
 {
 	char depart [TAILLE_CHAR];
@@ -277,6 +275,7 @@ void Catalogue::Rechercher(void)
 	}
 
 } //----- Fin de Rechercher
+
 
 void Catalogue::MenuTrajet(void) {
 	do
@@ -313,6 +312,7 @@ void Catalogue::MenuTrajet(void) {
 	} while (choix2 != 3);
 
 } //----- Fin de MenuTrajet
+
 
 void Catalogue::MenuCatalogue(void)
 {
@@ -364,7 +364,9 @@ void Catalogue::MenuCatalogue(void)
 	} while (choix1 != 5);
 }//----- Fin de mainCatalogue
 
-//-------------------------------------------- Constructeurs - destructeur
+
+//--------------------------------------------------- Surcharge d'operateurs --
+//---------------------------------------------- Constructeurs - Destructeur --
 Catalogue::Catalogue (void)
 {
 #ifdef MAP
@@ -383,6 +385,9 @@ Catalogue::~Catalogue ()
 
 } //----- Fin de ~Catalogue
 
+
+///////////////////////////////////////////////////////////////////////// PRIVE
+//------------------------------------------------------- Methodes protegees --
 void Catalogue::freeTab ( char ** tab , int size )
 {
 	for ( int i = 0 ; i<size ; i++ )
@@ -391,6 +396,7 @@ void Catalogue::freeTab ( char ** tab , int size )
 	}
 	delete [] tab ;
 }//----- Fin de freeTab
+
 
 void Catalogue::saisirTexte ( char * destination, unsigned int tailleMax )
 {

@@ -1,38 +1,37 @@
-/*************************************************************************
-                           TabTrajet  -  description
+/******************************************************************************
+                           TabTrajet  -
                              -------------------
-    début                : $DATE$
-    copyright            : (C) $YEAR$ par $AUTHOR$
-    e-mail               : $EMAIL$
-*************************************************************************/
+    debut                :  Decembre 2018
+    copyright            :  (C) 2018 par K. BOUZID et PY GENEST
+    e-mail               :  kenza.bouzid@insa-lyon.fr
+              pierre-yves.genest@insa-lyon.fr
+******************************************************************************/
+//--------- Réalisation de la classe <TabTrajet> (fichier TabTrajet.cpp) ------
 
-//---------- Réalisation de la classe <TabTrajet> (fichier TabTrajet.cpp) ------------
-
-//---------------------------------------------------------------- INCLUDE
-
-//-------------------------------------------------------- Include système
+////////////////////////////////////////////////////////////////////// INCLUDES
+//--------------------------------------------------------- Includes systeme --
 #include <iostream>
+
 using namespace std;
 
-//------------------------------------------------------ Include personnel
+//------------------------------------------------------ Includes personnels --
 #include "TabTrajet.h"
+//------------------------------------------------------------------ CONSTANTES
+const unsigned int TAILLE = 20;
 
-//------------------------------------------------------------- Constantes
-#define TAILLE 20
-//----------------------------------------------------------------- PUBLIC
-
-//----------------------------------------------------- Méthodes publiques
-
-
+//////////////////////////////////////////////////////////////////////// PUBLIC
+//------------------------------------------------------- Methodes publiques --
 Trajet** TabTrajet::GetTabTrajet(void) const
 {
   return trajet;
 } //-- Fin GetTabTrajet
 
+
 int TabTrajet::GetNbTrajets(void) const
 {
   return nbTrajets;
 } //-- Fin GetNbTrajets
+
 
 void TabTrajet::Affichage(void) const
 {
@@ -41,10 +40,11 @@ void TabTrajet::Affichage(void) const
     cout << "Le catalogue est vide!" << endl;
   }
   for (int i = 0; i < nbTrajets; i++)
-	{
-		trajet[i]->Affichage();
-	}
+  {
+    trajet[i]->Affichage();
+  }
 } //-- Fin Affichage
+
 
 void TabTrajet::AjouterTrajet(Trajet *t)
 {
@@ -54,24 +54,25 @@ if(nbAllocated == nbTrajets)
   #ifdef MAP
       cout << "Reallocation de la TabTrajet" << endl;
   #endif
-		Trajet ** temp;
-		nbAllocated += 30;
-		temp = new Trajet *[nbAllocated];
+    Trajet ** temp;
+    nbAllocated += 30;
+    temp = new Trajet *[nbAllocated];
 
-		for (int i = 0; i < nbTrajets; i++) {
-			temp[i] = trajet[i];
-		}
+    for (int i = 0; i < nbTrajets; i++) {
+      temp[i] = trajet[i];
+    }
 
     delete[] trajet;
     trajet = temp;
-	}
+  }
 
   nbTrajets++;
-	trajet[nbTrajets - 1] = t;
+  trajet[nbTrajets - 1] = t;
 } //-- Fin AjouterTrajet
 
-//-------------------------------------------- Constructeurs - destructeur
 
+//--------------------------------------------------- Surcharge d'operateurs --
+//---------------------------------------------- Constructeurs - Destructeur --
 TabTrajet::TabTrajet (void)
 {
 #ifdef MAP
@@ -82,20 +83,21 @@ nbAllocated = TAILLE ;
 trajet = new Trajet*[TAILLE];
 } //----- Fin de TabTrajet
 
+
 TabTrajet::~TabTrajet ( )
 {
 #ifdef MAP
     cout << "Appel au destructeur de <TabTrajet>" << endl;
 #endif
 
-	for (int i = 0; i < nbTrajets; i++)
-	{
+  for (int i = 0; i < nbTrajets; i++)
+  {
     if(trajet[i] != nullptr)
     {
       delete trajet[i];
       trajet[i] = nullptr;
     }
-	}
+  }
   if( trajet != nullptr)
   {
     delete[] trajet;
@@ -103,4 +105,6 @@ TabTrajet::~TabTrajet ( )
   }
 } //----- Fin de ~TabTrajet
 
-//----------------------------------------------------- Méthodes protégées
+
+///////////////////////////////////////////////////////////////////////// PRIVE
+//------------------------------------------------------- Methodes protegees --
