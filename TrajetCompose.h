@@ -11,6 +11,7 @@
 #define TrajetCompose_H
 
 ////////////////////////////////////////////////////////// Interfaces utilisees
+#include <string>
 //------------------------------------------------------------------ Constantes
 #include "Trajet.h"
 #include "TabTrajet.h"
@@ -66,6 +67,13 @@ public :
 
     char* GetMoyenTransport(void) const ;
     // Mode d'emploi : retourne le moyen de transport employé
+    //
+    // Contrat : Aucun
+    //
+
+
+    string DescriptionTrajet(void); 
+    // Mode d'emploi :
     //
     // Contrat : Aucun
     //

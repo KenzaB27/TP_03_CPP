@@ -27,6 +27,18 @@ void Trajet::Affichage(const char * c ) const
 } //----- Fin de Affichage
 
 
+bool Trajet::VerifVilleDepart(char *villeDepart)
+{
+	return strcmp(GetVilleDepart() , villeDepart); 
+}//----- Fin de VerifVilleDepart
+
+
+bool Trajet:: VerifVilleArrive(char *villeArrive)
+{
+	return strcmp(GetVilleArrive(), villeArrive);
+}//----- Fin de VerifVilleArrive
+
+
 //--------------------------------------------------- Surcharge d'operateurs --
 //---------------------------------------------- Constructeurs - Destructeur --
 Trajet::~Trajet()
