@@ -1,47 +1,56 @@
-/******************************************************************************
-                           Trajet  -
+/*************************************************************************
+                           Trajet  -  description
                              -------------------
-    debut                : 	Decembre 2018
-    copyright            : 	(C) 2018 par K. BOUZID et PY GENEST
-    e-mail               : 	kenza.bouzid@insa-lyon.fr
-							pierre-yves.genest@insa-lyon.fr
-******************************************************************************/
-//--------- Réalisation de la classe <Trajet> (fichier Trajet.cpp) ------------
+    début                : $DATE$
+    copyright            : (C) $YEAR$ par $AUTHOR$
+    e-mail               : $EMAIL$
+*************************************************************************/
 
-////////////////////////////////////////////////////////////////////// INCLUDES
-//--------------------------------------------------------- Includes systeme --
+//---------- Réalisation de la classe <Trajet> (fichier Trajet.cpp) ------------
+
+//---------------------------------------------------------------- INCLUDE
+
+//-------------------------------------------------------- Include système
 #include <iostream>
 #include <cstring>
 using namespace std;
-//------------------------------------------------------ Includes personnels --
+//------------------------------------------------------ Include personnel
 #include "Trajet.h"
 #include <cstring>
-//------------------------------------------------------------------ CONSTANTES
+
+	//----------------------------------------------------------------- PUBLIC
+
+	//----------------------------------------------------- Méthodes publiques
+	void Trajet::Affichage(const char * c ) const
+	{
+		cout << c << "De " << GetVilleDepart() << " a " << GetVilleArrive() << " ";
+	} //----- Fin de Affichage
+
+ 	bool Trajet::VerifVilleDepart(char *villeDepart)
+	{
+		return strcmp(GetVilleDepart() , villeDepart); 
+	}//----- Fin de VerifVilleDepart
+
+	bool Trajet:: VerifVilleArrive(char *villeArrive)
+	{
+		return strcmp(GetVilleArrive(), villeArrive);
+	}//----- Fin de VerifVilleArrive
 
 
-//////////////////////////////////////////////////////////////////////// PUBLIC
-//------------------------------------------------------- Methodes publiques --
-void Trajet::Affichage(const char * c ) const
-{
-	cout << c << "De " << GetVilleDepart() << " a " << GetVilleArrive() << " ";
-} //----- Fin de Affichage
+	//-------------------------------------------- Constructeurs - destructeur
 
+	Trajet::~Trajet()
+	{
+	#ifdef MAP
+		cout << "Appel au destructeur de <Trajet>" << endl;
+	#endif
+	} //----- Fin de ~Trajet
 
-//--------------------------------------------------- Surcharge d'operateurs --
-//---------------------------------------------- Constructeurs - Destructeur --
-Trajet::~Trajet()
-{
-#ifdef MAP
-	cout << "Appel au destructeur de <Trajet>" << endl;
-#endif
-} //----- Fin de ~Trajet
+	//------------------------------------------------------------------ PROTEGE
+	Trajet::Trajet()
+	{
+	#ifdef MAP
+		cout << "Appel au constructeur de <Trajet>" << endl;
+	#endif
 
-
-///////////////////////////////////////////////////////////////////////// PRIVE
-//------------------------------------------------------- Methodes protegees --
-Trajet::Trajet()
-{
-#ifdef MAP
-	cout << "Appel au constructeur de <Trajet>" << endl;
-#endif
-} //----- Fin de Trajet
+	} //----- Fin de Trajet
