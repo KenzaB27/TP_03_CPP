@@ -1,20 +1,19 @@
-/*************************************************************************
-                           Trajet  -  description
+/******************************************************************************
+                           Trajet  -
                              -------------------
-    début                : $DATE$
-    copyright            : (C) $YEAR$ par $AUTHOR$
-    e-mail               : $EMAIL$
-*************************************************************************/
+    debut                : 	Decembre 2018
+    copyright            : 	(C) 2018 par K. BOUZID et PY GENEST
+    e-mail               : 	kenza.bouzid@insa-lyon.fr
+							pierre-yves.genest@insa-lyon.fr
+******************************************************************************/
+//--------- Réalisation de la classe <Trajet> (fichier Trajet.cpp) ------------
 
-//---------- Réalisation de la classe <Trajet> (fichier Trajet.cpp) ------------
-
-//---------------------------------------------------------------- INCLUDE
-
-//-------------------------------------------------------- Include système
+////////////////////////////////////////////////////////////////////// INCLUDES
+//--------------------------------------------------------- Includes systeme --
 #include <iostream>
 #include <cstring>
 using namespace std;
-//------------------------------------------------------ Include personnel
+//------------------------------------------------------ Includes personnels --
 #include "Trajet.h"
 #include <cstring>
 //------------------------------------------------------------------ CONSTANTES

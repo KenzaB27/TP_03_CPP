@@ -1,26 +1,27 @@
-/*************************************************************************
-  TrajetSimple  -  description
+/******************************************************************************
+  TrajetSimple  -
   -------------------
-  début                : $DATE$
-copyright            : (C) $YEAR$ par $AUTHOR$
-e-mail               : $EMAIL$
- *************************************************************************/
-
+    debut                : 	Decembre 2018
+    copyright            : 	(C) 2018 par K. BOUZID et PY GENEST
+    e-mail               : 	kenza.bouzid@insa-lyon.fr
+							pierre-yves.genest@insa-lyon.fr
+******************************************************************************/
 //---------- Réalisation de la classe <TrajetSimple> (fichier TrajetSimple.cpp)
 
-//---------------------------------------------------------------- INCLUDE
-
-//-------------------------------------------------------- Include système
+////////////////////////////////////////////////////////////////////// INCLUDES
+//--------------------------------------------------------- Includes systeme --
 #include <iostream>
 #include <cstring>
 #include <ctype.h>
 
 using namespace std;
-//------------------------------------------------------ Include personnel
+//------------------------------------------------------ Includes personnels --
 #include "TrajetSimple.h"
+//------------------------------------------------------------------ CONSTANTES
 
-//----------------------------------------------------- Méthodes publiques
 
+//////////////////////////////////////////////////////////////////////// PUBLIC
+//------------------------------------------------------- Methodes publiques --
 void TrajetSimple::Affichage (const char* c) const
 {
 	   Trajet::Affichage("TS : ");
@@ -28,20 +29,24 @@ void TrajetSimple::Affichage (const char* c) const
 	   cout << "\n";
 } //----- Fin de Méthode
 
+
 char* TrajetSimple::GetVilleDepart(void) const
 {
 	   return villeDepart;
 } //----- Fin de GetVilleDepart
+
 
 char* TrajetSimple::GetVilleArrive(void) const
 {
 	   return villeArrive;
 } //----- Fin de GetVilleDepart
 
+
 char* TrajetSimple::GetMoyenTransport(void) const
 {
 	   return moyenTransport;
 } //----- Fin de Méthode
+
 
 char * TrajetSimple::toString(void)
 {
@@ -65,8 +70,8 @@ char * TrajetSimple::toString(void)
 }//-- Fin toString
 
 
-//-------------------------------------------- Constructeurs - destructeur
-
+//--------------------------------------------------- Surcharge d'operateurs --
+//---------------------------------------------- Constructeurs - Destructeur --
 TrajetSimple::TrajetSimple ( const char* uneVilleDepart,
 			 const char* uneVilleArrive,
 			 const char* unMoyenTransport)
@@ -106,6 +111,7 @@ TrajetSimple::~TrajetSimple ( )
 	   }
 } //----- Fin de ~TrajetSimple
 
+
 ///////////////////////////////////////////////////////////////////////// PRIVE
 //------------------------------------------------------- Methodes protegees --
 char * TrajetSimple::toUpper ( char * chaine )
@@ -120,4 +126,3 @@ char * TrajetSimple::toUpper ( char * chaine )
 
 	   return chaineUpper;
 }//-- Fin de toUpper
-

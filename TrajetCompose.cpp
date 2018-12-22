@@ -1,26 +1,25 @@
-#define _CRT_SECURE_NO_WARNINGS
-/*************************************************************************
-                           TrajetCompose  -  description
+/******************************************************************************
+                           TrajetCompose  -
                              -------------------
-    début                : $DATE$
-    copyright            : (C) $YEAR$ par $AUTHOR$
-    e-mail               : $EMAIL$
-*************************************************************************/
-
+    debut                : 	Decembre 2018
+    copyright            : 	(C) 2018 par K. BOUZID et PY GENEST
+    e-mail               : 	kenza.bouzid@insa-lyon.fr
+							pierre-yves.genest@insa-lyon.fr
+******************************************************************************/
 //-------- Réalisation de la classe <TrajetCompose> (fichier TrajetCompose.cpp)
 
-//---------------------------------------------------------------- INCLUDE
-
-//-------------------------------------------------------- Include système
+////////////////////////////////////////////////////////////////////// INCLUDES
+//--------------------------------------------------------- Includes systeme --
 #include <iostream>
 #include <cstring>
 using namespace std;
-//------------------------------------------------------ Include personnel
+//------------------------------------------------------ Includes personnels --
 #include "TrajetCompose.h"
+//------------------------------------------------------------------ CONSTANTES
 
-//----------------------------------------------------------------- PUBLIC
 
-//----------------------------------------------------- Méthodes publiques
+//////////////////////////////////////////////////////////////////////// PUBLIC
+//------------------------------------------------------- Methodes publiques --
 void TrajetCompose::Affichage (const char* c) const
 {
 	Trajet::Affichage("TC : ");
@@ -32,6 +31,7 @@ void TrajetCompose::Affichage (const char* c) const
 	}
 	cout << "\n";
 } //----- Fin de Affichage
+
 
 char * TrajetCompose::toString(void)
 {
@@ -46,10 +46,12 @@ char * TrajetCompose::toString(void)
 	return description;
 }//-- Fin toString
 
+
 char* TrajetCompose::GetVilleDepart(void) const
 {
   return tabTC->GetTabTrajet()[0]->GetVilleDepart();
 } //----- Fin de GetVilleDepart
+
 
 char* TrajetCompose::GetVilleArrive(void) const
 {
@@ -57,29 +59,19 @@ char* TrajetCompose::GetVilleArrive(void) const
 } //----- Fin de GetVilleDepart
 
 
-/*char* TrajetCompose::GetMoyenTransport(void) const
+char* TrajetCompose::GetMoyenTransport(void) const
 {
 	char * moyenTransport = new char [20] ;
 	strcpy(moyenTransport,"MT");
 	return moyenTransport;
-} //----- Fin de GetMoyenTrasport*/
+} //----- Fin de GetMoyenTrasport
+
 
 TabTrajet* TrajetCompose::GetTab(void)
 {
 	return tabTC;
 }//-- Fin GetTab
 
-string TrajetCompose::DescriptionTrajet(void)
-{
-	string descrption = "TC_"+villeDepart +"_"+villeArrive+tabTC->GetNbTrajets()+"\n";
-	for(int i=0; i<tabTC->GetNbTrajets(); i++)
-	{
-		description+=(tabTC->GetTabTrajet()[i]->DescriptionTrajet() +"\n");
-	}
-	return description; 
-}
-
-//-------------------------------------------- Constructeurs - destructeur
 
 string TrajetCompose::DescriptionTrajet(void)
 {
@@ -113,3 +105,7 @@ TrajetCompose::~TrajetCompose ( )
 #endif
 	delete tabTC;
 } //----- Fin de ~TrajetCompose
+
+
+///////////////////////////////////////////////////////////////////////// PRIVE
+//------------------------------------------------------- Methodes protegees --
