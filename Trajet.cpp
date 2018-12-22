@@ -1,19 +1,20 @@
-/******************************************************************************
-                           Trajet  -
+/*************************************************************************
+                           Trajet  -  description
                              -------------------
-    debut                : 	Decembre 2018
-    copyright            : 	(C) 2018 par K. BOUZID et PY GENEST
-    e-mail               : 	kenza.bouzid@insa-lyon.fr
-							pierre-yves.genest@insa-lyon.fr
-******************************************************************************/
-//--------- Réalisation de la classe <Trajet> (fichier Trajet.cpp) ------------
+    début                : $DATE$
+    copyright            : (C) $YEAR$ par $AUTHOR$
+    e-mail               : $EMAIL$
+*************************************************************************/
 
-////////////////////////////////////////////////////////////////////// INCLUDES
-//--------------------------------------------------------- Includes systeme --
+//---------- Réalisation de la classe <Trajet> (fichier Trajet.cpp) ------------
+
+//---------------------------------------------------------------- INCLUDE
+
+//-------------------------------------------------------- Include système
 #include <iostream>
 #include <cstring>
 using namespace std;
-//------------------------------------------------------ Includes personnels --
+//------------------------------------------------------ Include personnel
 #include "Trajet.h"
 #include <cstring>
 //------------------------------------------------------------------ CONSTANTES
