@@ -6,7 +6,7 @@
     e-mail               :  kenza.bouzid@insa-lyon.fr
                             pierre-yves.genest@insa-lyon.fr
 ******************************************************************************/
-//---------- Interface de la classe <Trajet> (fichier Trajet.h) ----------------
+//---------- Interface de la classe <Trajet> (fichier Trajet.h) ---------------
 #if ! defined ( Trajet_H )
 #define Trajet_H
 

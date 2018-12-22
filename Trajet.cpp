@@ -44,5 +44,4 @@ Trajet::Trajet()
 #ifdef MAP
 	cout << "Appel au constructeur de <Trajet>" << endl;
 #endif
-
 } //----- Fin de Trajet

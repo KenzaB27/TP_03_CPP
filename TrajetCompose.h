@@ -29,10 +29,10 @@ class TrajetCompose : public Trajet
 public :
     //--------------------------------------------------- Methodes publiques --
     void Affichage (const char* c = "") const;
-    // Mode d'emploi : Affiche les caractéristiques du trajet avec la possibilité
-    //                 d'ajouter des specifications grace au char * c
-    //Contrat : Redéfinition de la méthode virtuelle pure de la classe mère Trajet
-    //
+    // Mode d'emploi : Affiche les caractéristiques du trajet avec la 
+    //  possibilité d'ajouter des specifications grace au char * c
+    // Contrat : Redéfinition de la méthode virtuelle pure de la classe mère
+    //  Trajet
 
 
     char * toString(void);
@@ -43,7 +43,8 @@ public :
 
 
     TabTrajet* GetTab(void);
-    // Mode d'emploi : Renvoie la TabTrajet de trajets constituant le trajet composé
+    // Mode d'emploi : Renvoie la TabTrajet de trajets constituant le trajet
+    //  composé
     //
     // Contrat : Aucun
     //

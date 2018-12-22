@@ -50,7 +50,8 @@ public :
     void RechercheAvancee(void);
 
 
-    void RechercheEnProfondeur(char* Recherche, TrajetCompose* branche, TabTrajet* res);
+    void RechercheEnProfondeur(char* Recherche, TrajetCompose* branche,
+        TabTrajet* res);
 
 
     void MenuTrajet(void);
