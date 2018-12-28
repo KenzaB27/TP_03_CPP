@@ -1,17 +1,20 @@
 /******************************************************************************
- 					Catalogue  -
-  				-------------------
-    debut                : 	Decembre 2018
-    copyright            : 	(C) 2018 par K. BOUZID et PY GENEST
-    e-mail               : 	kenza.bouzid@insa-lyon.fr
-							pierre-yves.genest@insa-lyon.fr
-******************************************************************************/
+  Catalogue  -
+  -------------------
+debut                : 	Decembre 2018
+copyright            : 	(C) 2018 par K. BOUZID et PY GENEST
+e-mail               : 	kenza.bouzid@insa-lyon.fr
+pierre-yves.genest@insa-lyon.fr
+ ******************************************************************************/
 //--------- Réalisation de la classe <Catalogue> (fichier Catalogue.cpp) ------
 
 ////////////////////////////////////////////////////////////////////// INCLUDES
 //--------------------------------------------------------- Includes systeme --
 #include <cstring>
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <queue>
 
 using namespace std;
 //------------------------------------------------------ Includes personnels --
@@ -26,7 +29,7 @@ const unsigned int TAILLE_CHAR = 100;
 //////////////////////////////////////////////////////////////////////// PUBLIC
 //------------------------------------------------------- Methodes publiques --
 void Catalogue::RechercheEnProfondeur(char* Recherche, TrajetCompose* branche,
-	TabTrajet* res)
+		TabTrajet* res)
 {
 	//Recherches des trajets non etudiés, pas dans le TC de la branche 
 	//	d'avant donc
@@ -50,7 +53,7 @@ void Catalogue::RechercheEnProfondeur(char* Recherche, TrajetCompose* branche,
 		}
 		//On ne selectionne que les trajets restants et valides
 		if(!used && 
-			(strcmp(liste.GetTabTrajet()[i]->GetVilleDepart(), branche->GetVilleArrive()) == 0))
+				(strcmp(liste.GetTabTrajet()[i]->GetVilleDepart(), branche->GetVilleArrive()) == 0))
 		{
 			TabTrajet * temp_S = new TabTrajet();
 			for(int k = 0; k < branche->GetTab()->GetNbTrajets(); k++)
@@ -82,9 +85,7 @@ void Catalogue::RechercheEnProfondeur(char* Recherche, TrajetCompose* branche,
 			}
 		}
 	}
-
 }
-
 
 void Catalogue::RechercheAvancee()
 {
@@ -103,18 +104,18 @@ void Catalogue::RechercheAvancee()
 	for(int i = 0; i < liste.GetNbTrajets(); i++)
 	{
 		if(strcmp(liste.GetTabTrajet()[i]->GetVilleDepart(), depart) == 0)
-		// On ne choisit que les trajets compatibles
+			// On ne choisit que les trajets compatibles
 		{
 
 			TabTrajet *tabT (new TabTrajet());
 			tabT->AjouterTrajet(liste.GetTabTrajet()[i]);
-			
+
 			//Creation de la 1ere branche
 			TrajetCompose* temp = new TrajetCompose(tabT);
 			resultats->AjouterTrajet(temp);
 
 			if(strcmp(liste.GetTabTrajet()[i]->GetVilleArrive(), arrivee) == 0)
-			//Si le trajet correspond on l'affiche
+				//Si le trajet correspond on l'affiche
 			{
 				cout << "- Trajet :" << endl;
 				liste.GetTabTrajet()[i]->Affichage("");
@@ -272,7 +273,7 @@ void Catalogue::Rechercher(void)
 	for (int i=0; i<liste.GetNbTrajets(); i++)
 	{
 		if (!strcmp(liste.GetTabTrajet()[i]->GetVilleDepart(), depart) &&
-			!strcmp(liste.GetTabTrajet()[i]->GetVilleArrive(), arrivee))
+				!strcmp(liste.GetTabTrajet()[i]->GetVilleArrive(), arrivee))
 		{
 			cout << "Trajet : ", liste.GetTabTrajet()[i]->Affichage();
 			count++;
@@ -329,15 +330,18 @@ void Catalogue::MenuCatalogue(void)
 	{
 		choix2 = 0;
 
-		cout << endl << endl << "------Bienvenue sur FlexiTrip------" << endl
-			<< endl;
+		cout << endl << endl << "------Bienvenue sur FlexiTrip------"
+			<< endl << endl;
 		cout << "         Catalogue         " << endl;
 		cout << "1. Ajouter un trajet" << endl;
 		cout << "2. Afficher le catalogue de trajets proposes" << endl;
 		cout << "3. Rechercher un parcours" << endl;
 		cout << "4. Rechercher un parcours - Recherche avancee" << endl;
-		cout << "5. Quitter" << endl;
-		
+		cout << "5. Sauvegarder le catalogue dans un fichier" << endl;
+		cout << "6. Recuperer des trajets a partir d'un fichier"
+			<< endl;
+		cout << "7. Quitter" << endl;
+
 		if( !( cin >> choix1 ) )
 		{
 			cin.clear();
@@ -361,35 +365,154 @@ void Catalogue::MenuCatalogue(void)
 				Rechercher();
 				break;
 			case 4:
-				cout << "4. Rechercher un parcours - Recherche avancee" 
-					<< endl;
+				cout << "4. Rechercher un parcours -"
+					<< " Recherche avancee" << endl;
 				RechercheAvancee();
 				break;
 			case 5:
+				// Ecriture des trajets dans le fichier
+				break;
+			case 6:
+				// Lecture des trajets a partir d'un fichier
+				cout << "Lecture de trajets a partir"
+					<< " d'un fichier" << endl;
+				LectureTrajets();
+				break;
+			case 7:
 				break;
 			default:
-				cout << "Choix invalide. Attendu : 1-2-3-4" << endl;
+				cout << "Choix invalide. Attendu : 1-7" << endl;
 				break;
 		}
 
-	} while (choix1 != 5);
+	} while (choix1 != 7);
 }//----- Fin de mainCatalogue
 
 
 void Ecriture(string nomFichier , int option ){
 
-	ofstream fichier(nomFichier, ios::out | (option==1)? ios::trunc : ios::app); //ouverture en écriture avec effacement du fichier ouvert
-	if (fichier)
-		{
-			for (int i =0 ; i < liste.GetNbTrajets(); i++)
-			{
-				fichier
+	/* ofstream fichier(nomFichier, ios::out | (option==1)? ios::trunc : ios::app); //ouverture en écriture avec effacement du fichier ouvert
+	   if (fichier)
+	   {
+	   for (int i =0 ; i < liste.GetNbTrajets(); i++)
+	   {
+	   fichier
 
-			}
+	   }
 
-		}
+	   }
+	 */
 
 }//----- Fin de Ecriture
+
+
+void Catalogue::LectureTrajets()
+{
+	// NE PAS OUBLIER DE FERMER LE FICHIER !!!
+
+	//--- Choix du fichier
+	cout << "Chemin vers le fichier qui contient les trajets :" << endl;
+
+	string source;
+	getline(cin, source);	//getline pour les noms de fichier avec espaces
+
+	ifstream fichier;
+	fichier.open(source, ios_base::in);
+
+	//--- Verification de l'accessibilite du fichier
+	if( !fichier )
+	{
+		cout << "Le fichier n'est pas accessible !" << endl;
+		fichier.close();
+		return;
+	}
+
+	//--- Recuperation de l'entete
+	string infos;
+	getline(fichier, infos);
+
+	queue < string > dec = Catalogue::decouperString ( infos );
+
+	if ( dec.size() != 3 )
+		//Format non respecte de l'entete
+	{
+		cout << "Le format du fichier n'est pas bon ou "
+			<< "le fichier est vide" << endl;
+		fichier.close();
+		return;
+	}
+	int nbTrajets = stoi ( dec.front() );
+	dec.pop();
+	
+	bool existeTS = stoi ( dec.front() );
+	dec.pop();
+
+	bool existeTC = stoi ( dec.front() );
+
+	//Liste vide
+	if( nbTrajets <= 0 )
+	{
+		cout << "Pas de trajets sauvegardes dans ce fichier !" << endl;
+		fichier.close();
+		return;
+	}
+
+	//--- Options pour l'utilisateur
+	cout << "Choisissez l'option pour le chargement des trajets :" << endl;
+	cout << "1. Tous les trajets" << endl;
+	if( existeTC && existeTS )
+	{
+		cout << "2. Selon le type de trajet" << endl;
+	}
+	cout << "3. Selon la ville de depart/d'arrivee" << endl;
+	cout << "4. Selon un intervalle de trajets" << endl;
+	cout << "Votre choix :" << endl;
+
+	bool choixJuste = false;
+	int choix;
+	while ( !choixJuste )
+	{
+		while ( !( cin >> choix ))
+		{
+			cin.clear();
+			cin.ignore(1000, '\n');
+			cout << "Veuillez rentrer un chiffre !" << endl;
+		}
+
+		switch( choix )
+		{
+			case 1:
+				recupereTrajets ( fichier, nbTrajets );
+				choixJuste = true;
+				break;
+			case 2:
+				if( existeTC && existeTS )
+				{
+					recupereTrajetsType ( fichier,
+						nbTrajets );
+					choixJuste = true;
+				}
+				else
+				{
+					cout << "Choix invalide !" << endl;
+				}
+				break;
+			case 3:
+				recupereTrajetsVille ( fichier, nbTrajets );
+				choixJuste = true;
+				break;
+			case 4:
+				recupereTrajetsIntervalle ( fichier, nbTrajets );
+				choixJuste = true;
+				break;
+			default:
+				cout << "Choix invalide !" << endl;
+				break;
+		}
+	}
+
+	fichier.close();
+}//----- Fin de LectureTrajets
 
 
 //--------------------------------------------------- Surcharge d'operateurs --
@@ -415,6 +538,86 @@ Catalogue::~Catalogue ()
 
 ///////////////////////////////////////////////////////////////////////// PRIVE
 //------------------------------------------------------- Methodes protegees --
+void Catalogue::recupereTrajets ( ifstream & fichier, unsigned int nbTrajets )
+{
+
+}
+
+
+void Catalogue::recupereTrajetsType ( ifstream & fichier,
+	unsigned int nbTrajets )
+{
+
+}
+
+
+void Catalogue::recupereTrajetsVille ( ifstream & fichier,
+	unsigned int nbTrajets )
+{
+
+}
+
+
+void Catalogue::recupereTrajetsIntervalle ( ifstream & fichier,
+	unsigned int nbTrajets )
+{
+
+}
+
+
+Trajet * Catalogue::lectureTrajet ( ifstream & fichier, TypeTrajet * type )
+{
+	string description;
+	getline ( fichier, description );
+	queue < string > decoupage = decouperString ( description );
+
+	Trajet * trajet (nullptr) ;
+
+	if ( decoupage.front().compare ( "S" ) == 0 )
+		//Trajet Simple
+	{
+		decoupage.pop();
+		string villeDepart, villeArrivee, moyenTransport;
+		villeDepart = decoupage.front();
+		decoupage.pop();
+
+		villeArrivee = decoupage.front();
+		decoupage.pop();
+		
+		moyenTransport = decoupage.front();
+
+		trajet = new TrajetSimple ( villeDepart.c_str(), 
+			villeArrivee.c_str(), moyenTransport.c_str() );
+		*type = SIMPLE;
+	}
+	else
+		//Trajet compose
+	{
+		decoupage.pop();
+		decoupage.pop();
+		decoupage.pop();
+
+		//Nombre de trajets du trajet compose
+		int nbTrajets = stoi ( decoupage.front() );
+		
+		TabTrajet * tab = new TabTrajet ();
+		TypeTrajet * typeVide = new TypeTrajet;
+		
+		//On lit tous les trajets
+		for ( int i = 0; i < nbTrajets; i++ )
+		{
+			tab->AjouterTrajet ( lectureTrajet ( fichier, typeVide ) );
+		}
+		delete typeVide;
+
+		trajet = new TrajetCompose ( tab );
+		*type = COMPOSE;
+	}
+
+	return trajet;
+}
+
+
 void Catalogue::freeTab ( char ** tab , int size )
 {
 	for ( int i = 0 ; i<size ; i++ )
@@ -444,4 +647,29 @@ void Catalogue::saisirTexte ( char * destination, unsigned int tailleMax )
 			cout << "Le caractere '_' est interdit !" << endl;
 		}
 	} while ( !saisieJuste );
+}
+
+
+queue < string > Catalogue::decouperString ( const string & lecture,
+		char separateur )
+{
+	queue < string > decoupage;
+	string::const_iterator precCopieIterateur = lecture.cbegin();
+
+	for ( string::const_iterator i = lecture.cbegin(); i != lecture.cend(); i++)
+	{
+		if ( *i == separateur )
+		{
+			decoupage.emplace ( precCopieIterateur, i );
+			precCopieIterateur = i + 1;//On saute le separateur
+		}
+	}
+
+	//Pour le dernier decoupage au besoin
+	if ( precCopieIterateur < lecture.cend() )
+	{
+		decoupage.emplace ( precCopieIterateur, lecture.cend() );	
+	}
+
+	return decoupage;	//On ne peut pas renvoyer de reference
 }

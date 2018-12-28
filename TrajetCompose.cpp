@@ -73,7 +73,7 @@ TabTrajet* TrajetCompose::GetTab(void)
 }//-- Fin GetTab
 
 
-string TrajetCompose::DescriptionTrajet(void)
+/* string TrajetCompose::DescriptionTrajet(void)
 {
 	string descrption = "TC_"+villeDepart +"_"+villeArrive+tabTC->GetNbTrajets()+"\n";
 	for(int i=0; i<tabTC->GetNbTrajets(); i++)
@@ -81,7 +81,7 @@ string TrajetCompose::DescriptionTrajet(void)
 		description+=(tabTC->GetTabTrajet()[i]->DescriptionTrajet() +"\n");
 	}
 	return description; 
-}
+} */
 
 
 //--------------------------------------------------- Surcharge d'operateurs --

@@ -12,6 +12,8 @@
 
 ////////////////////////////////////////////////////////// Interfaces utilisees
 #include <string>
+
+using namespace std;
 //------------------------------------------------------------------ Constantes
 #include "Trajet.h"
 #include "TabTrajet.h"

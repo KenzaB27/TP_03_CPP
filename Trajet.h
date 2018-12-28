@@ -62,11 +62,11 @@ public :
     //
 
 
-    virtual string DescriptionTrajet(void)=0 ; 
+    /* virtual string DescriptionTrajet(void)=0 ; 
     // Mode d'emploi : 
     //
     // Contrat : Aucun
-    //
+    // */
 
 
     bool VerifVilleDepart(char * villeDepart); 
