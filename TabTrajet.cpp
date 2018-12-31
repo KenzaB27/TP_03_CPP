@@ -75,12 +75,10 @@ if(nbAllocated == nbTrajets)
 bool TabTrajet::ExisteDeja ( const Trajet * t ) const
 {
 	char * t_S = t->toString();
-	cout << " t : \"" << t_S << "\"" << endl; 
 
 	for(int j = 0; j < nbTrajets; j++)
 	{
 		char * l_S = trajet[j]->toString();
-		cout << " \"" << l_S << "\"" << endl;
 
 		if(strcmp(t_S, l_S) == 0)
 		{

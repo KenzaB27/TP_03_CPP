@@ -211,9 +211,6 @@ protected :
 
 
     //--------------------------------------------------- Attributs proteges --
-    int choix1 ; // Choix du premier Catalogue
-    int choix2 ; // Choix du sous Catalogue d'Ajout de trajets
-
     TabTrajet liste;
     // Tableau des trajets du catalogue
 };

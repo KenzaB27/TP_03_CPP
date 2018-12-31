@@ -88,6 +88,7 @@ void Catalogue::RechercheEnProfondeur(char* Recherche, TrajetCompose* branche,
 	}
 }
 
+
 void Catalogue::RechercheAvancee()
 {
 	char depart [ TAILLE_CHAR ];
@@ -257,6 +258,7 @@ void Catalogue::Rechercher(void)
 
 
 void Catalogue::MenuTrajet(void) {
+	int choix2 = 0;
 	do
 	{
 		cout << "Quel est le type de trajet ?" << endl;
@@ -264,7 +266,7 @@ void Catalogue::MenuTrajet(void) {
 		cout << "2. Compose" << endl;
 		cout << "3. Retour au Catalogue" << endl;
 
-		if( !( cin >> choix2 ))
+		while( !( cin >> choix2 ))
 		{
 			cin.clear();
 			cin.ignore(1000,'\n');
@@ -295,9 +297,9 @@ void Catalogue::MenuTrajet(void) {
 
 void Catalogue::MenuCatalogue(void)
 {
+	int choix1 = 0;
 	do
 	{
-		choix2 = 0;
 
 		cout << endl << endl << "------Bienvenue sur FlexiTrip------"
 			<< endl << endl;
@@ -311,14 +313,14 @@ void Catalogue::MenuCatalogue(void)
 			<< endl;
 		cout << "7. Quitter" << endl;
 
-		if( !( cin >> choix1 ) )
+		while( !( cin >> choix1 ) )
 		{
 			cin.clear();
 			cin.ignore(1000,'\n');
-			cout << "Veuillez saisir un chiffre !" << endl;
+			cout << "Veuillez saisir un chiffre" << endl;
 		}
 		cin.ignore();
-
+	
 		switch (choix1)
 		{
 			case 1:
@@ -377,8 +379,6 @@ void Ecriture(string nomFichier , int option ){
 
 void Catalogue::LectureTrajets()
 {
-	// NE PAS OUBLIER DE FERMER LE FICHIER !!!
-
 	//--- Choix du fichier
 	cout << "Chemin vers le fichier qui contient les trajets :" << endl;
 
@@ -482,13 +482,11 @@ void Catalogue::LectureTrajets()
 
 //--------------------------------------------------- Surcharge d'operateurs --
 //---------------------------------------------- Constructeurs - Destructeur --
-Catalogue::Catalogue (void)
+Catalogue::Catalogue (void) : liste()
 {
 #ifdef MAP
 	cout << "Appel au constructeur de <Catalogue>" << endl;
 #endif
-	choix1 = 0;
-	choix2 = 3;
 } //----- Fin de Catalogue
 
 
@@ -526,7 +524,7 @@ void Catalogue::recupereTrajets ( ifstream & fichier, unsigned int nbTrajets )
 			}
 		}
 	}
-}
+}//--- Fin de recupereTrajets
 
 
 void Catalogue::recupereTrajetsType ( ifstream & fichier,
@@ -534,7 +532,7 @@ void Catalogue::recupereTrajetsType ( ifstream & fichier,
 {
 	cout << "Recuperation de tous les trajets en fonction du type :"
 		<< endl;
-	cout << "Saisissez le typ de trajet" << endl;
+	cout << "Saisissez le type de trajet" << endl;
 	cout << "1. Trajets simples" << endl;
 	cout << "2. Trajets composes" << endl;
 
@@ -568,21 +566,152 @@ void Catalogue::recupereTrajetsType ( ifstream & fichier,
 		}
 	}
 
-}
+}//--- Fin de recupereTrajetsType
 
 
 void Catalogue::recupereTrajetsVille ( ifstream & fichier,
 	unsigned int nbTrajets )
 {
+	cout << "Recuperation du trajet en fonction des villes de depart"
+		<< " et d'arrivee" << endl;
+	cout << "Saisissez le critere sur les villes de depart et d'arrivee"
+		<< endl;
+	cout << "1. Ville de depart uniquement" << endl;
+	cout << "2. Ville d'arrivee uniquement" << endl;
+	cout << "3. Ville de depart et d'arrivee" << endl;
+	
+	// Recuperation du choix
+	int choix = 0;
+	while ( ! ( cin >> choix ) || choix < 1 || choix > 3 )
+	{
+		cin.clear();
+		cin.ignore(1000, '\n');
+		cout << "Saisissez un chiffre entre 1 et 3 !" << endl;
+	}
+	cin.ignore();	//On elimine de '\n'
 
-}
+	// Parametre de lecture du trajet
+	OptionLecture option = REFUSEE;
+	switch ( choix )
+	{
+		case 1:
+			option = VILLE_DEPART;
+			break;
+		case 2:
+			option = VILLE_ARRIVEE;
+			break;
+		case 3:
+			option = VILLES;
+			break;			
+	}
+	
+	// Villes de depart et d'arrivee
+	char * villeDepart = new char [ TAILLE_CHAR ];
+	villeDepart[0] = '\0';
+	char * villeArrivee = new char [ TAILLE_CHAR ];
+	villeArrivee[0] = '\0';
+
+	if ( option == VILLE_DEPART || option == VILLES )
+	{
+		cout << "Ville de depart :" << endl;
+		saisirTexte( villeDepart, TAILLE_CHAR );
+	}
+	
+	if ( option == VILLE_ARRIVEE || option == VILLES )
+	{
+		cout << "Ville d'arrivee :" << endl;
+		saisirTexte( villeArrivee, TAILLE_CHAR );
+	}
+
+	// On parcourt tous les trajets et on gardent ceux qui sont bons
+	for ( unsigned int i = 0; i < nbTrajets; i++ )
+	{
+		Trajet * t = lectureTrajet ( fichier, option, villeDepart,
+			villeArrivee );
+
+		if ( t != nullptr && ! liste.ExisteDeja ( t ) )
+		{
+			liste.AjouterTrajet ( t );
+			cout << "Ajout de : ";
+			t->Affichage();
+		}
+		else
+		{
+			if( t != nullptr )
+			{
+				delete t;
+			}
+		}
+	}
+
+	delete[] villeDepart;
+	delete[] villeArrivee;
+}//--- Fin de recupereTrajetsVille
 
 
 void Catalogue::recupereTrajetsIntervalle ( ifstream & fichier,
 	unsigned int nbTrajets )
 {
+	cout << "Recuperation des trajets suivant un intervalle" << endl;
+	cout << "Saisissez des nombres entre 1 et " << nbTrajets << endl;
 
-}
+	unsigned int borneBasse = 0;
+	unsigned int borneHaute = 0;
+
+	// Borne du bas
+	cout << "Borne basse :" << endl;
+	while ( !( cin >> borneBasse ) 
+		|| borneBasse < 1 || borneBasse > nbTrajets )
+	{
+		cin.clear();
+		cin.ignore ( 1000, '\n' );
+		cout << "Saisissez des nombres entre 1 et " << nbTrajets
+			<< " !" << endl;
+	}
+
+	// Borne du haut
+	cout << "Borne haute entre " << borneBasse << " et " << nbTrajets
+		<< endl;
+	while ( !( cin >> borneHaute )
+		|| borneHaute < borneBasse || borneHaute > nbTrajets )
+	{
+		cin.clear();
+		cin.ignore ( 1000, '\n' );
+		cout << "Saisissez un nombre entre " << borneBasse << " et "
+			<< nbTrajets << " !" << endl;
+	}
+	cin.ignore();	// On supprime le '\n' pour les lectures suivantes
+
+	// On parcourt tous les trajets
+	for ( unsigned int i = 1; i <= nbTrajets; i++ )
+		//Les bornes de i sont decalees : le premier trajet doit avoir
+		//	un indice de 1
+	{
+		if ( i >= borneBasse && i <= borneHaute )
+			// Dans les bornes : on sauvegarde
+		{
+			Trajet * t = lectureTrajet ( fichier, ACCEPTEE );
+				
+			if ( t != nullptr && ! liste.ExisteDeja ( t ) )
+			{
+				liste.AjouterTrajet ( t );
+				cout << "Ajout de : ";
+				t->Affichage();
+			}
+			else
+			{
+				if( t != nullptr )
+				{
+					delete t;
+				}
+			}
+		}
+		else	//Sinon on ignore
+		{
+			lectureTrajet ( fichier, REFUSEE );
+		}
+	}
+}//--- Fin de recupereTrajetsIntervalle
 
 
 Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
@@ -673,7 +802,7 @@ Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
 		}
 		
 	}
-}
+}//--- Fin de lectureTrajet
 
 
 void Catalogue::freeTab ( char ** tab , int size )
@@ -705,7 +834,8 @@ void Catalogue::saisirTexte ( char * destination, unsigned int tailleMax )
 			cout << "Le caractere '_' est interdit !" << endl;
 		}
 	} while ( !saisieJuste );
-}
+}//--- Fin de saisirTexte
+
 
 vector < string > Catalogue::decouperChaine ( string & chaine,
 		char separateur )
@@ -735,4 +865,4 @@ vector < string > Catalogue::decouperChaine ( string & chaine,
 	}
 
 	return decoupage;	//On ne peut pas renvoyer de reference
-}
+}//--- Fin de decouperChaine
