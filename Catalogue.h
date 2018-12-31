@@ -12,7 +12,7 @@
 
 ////////////////////////////////////////////////////////// Interfaces utilisees
 #include <string>
-#include <queue>
+#include <vector>
 
 #include "TabTrajet.h"
 #include "TrajetCompose.h"
@@ -20,9 +20,18 @@
 using namespace std;
 //------------------------------------------------------------------ Constantes
 //----------------------------------------------------------------------- Types
-typedef enum { SIMPLE, COMPOSE } TypeTrajet;
-// Enumeration pour le choix du type de traje a recuperer/sauvegarder dans un
-//	fichier
+// Enumeration pour les options de lecture de la methode LectureTrajet
+typedef enum {  ACCEPTEE,	// Creation de trajet dans tous les cas
+		REFUSEE,	// Pas de creation de trajet
+		TRAJET_SIMPLE,	// Creation d'un trajet s'il est simple
+		TRAJET_COMPOSE,	// Creation de trajet s'il est compose
+		VILLE_DEPART,	// Creation de trajet si la ville de depart
+				//	correspond
+		VILLE_ARRIVEE,	// Creation de trajet si la ville d'arrivee 
+				//	correspond
+		VILLES		// Creation de trajet si la ville de depart et
+				//	d'arrivee correspondent
+	} OptionLecture;
 
 
 //-----------------------------------------------------------------------------
@@ -147,20 +156,28 @@ protected :
     //		dans le fichier.
 
 
-    static Trajet * lectureTrajet ( ifstream & fichier, TypeTrajet * type );
+    static Trajet * lectureTrajet ( ifstream & fichier,
+    	OptionLecture optionLecture, string villeDepart = "",
+	string villeArrivee = "" );
     // Mode d'emploi :
     //	Permet de lire un trajet dans le fichier et de creer un objet associe
-    //		a ce trajet
+    //		a ce trajet suivant l'option de lecture renseignee
     //	Le trajet qui est lu est celui qui se situe a la position du curseur
-    //		dans le fichier
+    //		dans le fichier. Le trajet est lu dans tous les cas.
     //	fichier : le fichier qui contient le trajet a recuperer.
-    //	type : !!! valeur de retour !!! Pointeur qui indique le type de 
-    //		trajet du trajet qui a ete lu
+    //	optionLecture : l'option de lecture sur le trajet (voir la description
+    //		de l'enumeration en haut du fichier)
+    //	villeDepart : specification de la ville de depart (uniquement pour
+    //		VILLE_DEPART et VILLES).
+    //	villeArrivee : specification de la ville d'arrivee (uniquement pour
+    //		VILLE_ARRIVEE et VILLES)
     //	Trajet * : le pointeur vers le trajet cree. La destruction est a la
-    //		charge du client
+    //		charge du client.
+    //		Si aucun trajet n'est cree (option non verifiese, on renvoie
+    //			nullptr.
     // Contrat :
     //	Le format du fichier doit etre correct et contenir un trajet lisible a 
-    //		la position du curseur
+    //		la position du curseur.
 
 
     static void saisirTexte ( char * destination, unsigned int tailleMax );
@@ -173,15 +190,16 @@ protected :
     //  Aucun contrat.
 
 
-    static queue < string > decouperString ( const string & lecture,
+    static vector < string > decouperChaine ( string & chaine,
     	char separateur = '_' );
     // Mode d'emploi :
     //	Permet de decouper une chaine de caracteres en plusieurs morceaux, 
     //		suivant un caractere separateur.
-    //	lecture : la chaine de caracteres a decouper
+    //	chaine : la chaine de caracteres a decouper. A la fin, elle ne 
+    //		possedera plus de caracteres non imprimables
     //	separateur : le caractere qui separer les morceaux (il ne sera pas
     //		recopie)
-    //	retour : une file de string qui contient les informations decoupees.
+    //	retour : un vecteur de string qui contient les informations decoupees.
     // Contrat :
     //	Aucun contrat.
     
@@ -200,5 +218,4 @@ protected :
 };
 
 //------------------------------- Autres définitions dépendantes de <Catalogue>
-
 #endif // Catalogue_H

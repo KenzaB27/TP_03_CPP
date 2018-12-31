@@ -48,9 +48,9 @@ char* TrajetSimple::GetMoyenTransport(void) const
 } //----- Fin de Méthode
 
 
-char * TrajetSimple::toString(void)
+char * TrajetSimple::toString(void) const
 {
-	   char * description = new char[100];
+	   char * description = new char[102];
 	   description[0]='\0';
 
 	   //On passe aux majuscules pour eviter les problemes de casse
@@ -59,7 +59,9 @@ char * TrajetSimple::toString(void)
 	   char * moyenTransportUpper = toUpper ( moyenTransport );
 
 	   strcat(description, villeDepartUpper );
+	   strcat(description, "_");
 	   strcat(description, villeArriveUpper );
+	   strcat(description, "_");
 	   strcat(description, moyenTransportUpper );
 
 	   delete[] villeDepartUpper;
@@ -68,6 +70,20 @@ char * TrajetSimple::toString(void)
 
 	   return description;
 }//-- Fin toString
+
+
+char * TrajetSimple::toUpper ( const char * chaine )
+{
+	   unsigned int longueur = strlen ( chaine ) + 1;
+	   char * chaineUpper = new char [ longueur ];
+
+	   for ( unsigned int i = 0; i < longueur; i++ )
+	   {
+			 chaineUpper [ i ] = toupper ( chaine [ i ] );
+	   }
+
+	   return chaineUpper;
+}//-- Fin de toUpper
 
 
 //--------------------------------------------------- Surcharge d'operateurs --
@@ -114,15 +130,3 @@ TrajetSimple::~TrajetSimple ( )
 
 ///////////////////////////////////////////////////////////////////////// PRIVE
 //------------------------------------------------------- Methodes protegees --
-char * TrajetSimple::toUpper ( char * chaine )
-{
-	   unsigned int longueur = strlen ( chaine ) + 1;
-	   char * chaineUpper = new char [ longueur ];
-
-	   for ( unsigned int i = 0; i < longueur; i++ )
-	   {
-			 chaineUpper [ i ] = toupper ( chaine [ i ] );
-	   }
-
-	   return chaineUpper;
-}//-- Fin de toUpper

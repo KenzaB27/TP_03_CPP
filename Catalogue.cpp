@@ -14,7 +14,8 @@ pierre-yves.genest@insa-lyon.fr
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <queue>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 //------------------------------------------------------ Includes personnels --
@@ -144,31 +145,15 @@ void Catalogue::AjoutSimple(void)
 
 	TrajetSimple* t (new TrajetSimple(depart, arrivee, mt));
 
-	bool used = false;
-	for(int j = 0; j < liste.GetNbTrajets(); j++)
-	{
-		char * t_S =t->toString();
-		char * l_S = liste.GetTabTrajet()[j]->toString();
 
-		if(strcmp(t_S, l_S) == 0)
-		{
-			used = true;
-			cout << "\n" << "Trajet existant" << "\n" << endl;
-			delete [] t_S;
-			delete [] l_S;
-			break;
-		}
-		delete [] t_S;
-		delete [] l_S;
-	}
-
-	if(used == false)
+	if( ! liste.ExisteDeja ( t ) )
 	{
 		liste.AjouterTrajet(t);
 		cout << "\n" << "Trajet Ajoute !" << endl;
 	}
 	else
 	{
+		cout << endl << "Trajet existant" << endl << endl;
 		delete t;
 	}
 
@@ -226,29 +211,13 @@ void Catalogue::AjoutCompose(void)
 
 	TrajetCompose* tc(new TrajetCompose(tabTS));
 
-	bool used = false;
-	for(int j = 0; j < liste.GetNbTrajets(); j++)
-	{
-		char * t_S =tc->toString();
-		char * l_S = liste.GetTabTrajet()[j]->toString();
-
-		if(strcmp(t_S, l_S) == 0)
-		{
-			used = true;
-			cout << "\n" << "Trajet existant" << "\n" << endl;
-			delete [] t_S;
-			delete [] l_S;
-			break;
-		}
-		delete [] t_S;
-		delete [] l_S;
-	}
-	if(!used)
+	if( ! liste.ExisteDeja ( tc ) )
 	{
 		liste.AjouterTrajet(tc);
 		cout << "\n" << "Trajet ajoute !" << endl;
 	}
 	else{
+		cout << "\n" << "Trajet existant" << "\n" << endl;
 		delete tc;
 	}
 
@@ -431,7 +400,7 @@ void Catalogue::LectureTrajets()
 	string infos;
 	getline(fichier, infos);
 
-	queue < string > dec = Catalogue::decouperString ( infos );
+	vector < string > dec = Catalogue::decouperChaine ( infos );
 
 	if ( dec.size() != 3 )
 		//Format non respecte de l'entete
@@ -441,13 +410,9 @@ void Catalogue::LectureTrajets()
 		fichier.close();
 		return;
 	}
-	int nbTrajets = stoi ( dec.front() );
-	dec.pop();
-	
-	bool existeTS = stoi ( dec.front() );
-	dec.pop();
-
-	bool existeTC = stoi ( dec.front() );
+	int nbTrajets = stoi ( dec[0] );
+	bool existeTS = stoi ( dec[1] );
+	bool existeTC = stoi ( dec[2] );
 
 	//Liste vide
 	if( nbTrajets <= 0 )
@@ -540,7 +505,23 @@ Catalogue::~Catalogue ()
 //------------------------------------------------------- Methodes protegees --
 void Catalogue::recupereTrajets ( ifstream & fichier, unsigned int nbTrajets )
 {
+	cout << "Recuperation de tous les trajets :" << endl;
 
+	for ( unsigned int i = 0; i < nbTrajets; i++ )
+	{
+		Trajet * t = lectureTrajet ( fichier, ACCEPTEE );
+
+		if ( ! liste.ExisteDeja ( t ) )
+		{
+			liste.AjouterTrajet ( t );
+			cout << "Ajout de : ";
+			t->Affichage();
+		}
+		else
+		{
+			delete t;
+		}
+	}
 }
 
 
@@ -565,56 +546,94 @@ void Catalogue::recupereTrajetsIntervalle ( ifstream & fichier,
 }
 
 
-Trajet * Catalogue::lectureTrajet ( ifstream & fichier, TypeTrajet * type )
-{
-	string description;
-	getline ( fichier, description );
-	queue < string > decoupage = decouperString ( description );
+Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
+	OptionLecture optionLecture, string villeDepart, string villeArrivee )
+{	
+	// Dans tous les cas, on lit le trajet
+	string chaineTrajet;
+	getline(fichier, chaineTrajet);
+	vector <string> params = decouperChaine ( chaineTrajet );
 
-	Trajet * trajet (nullptr) ;
+	bool estCompose = params[ 0 ].compare ( "C" ) == 0;
+	
+	// Comparaison des villes sans soucis de la casse des lettres
+	char * vDepUpper = TrajetSimple::toUpper ( villeDepart.c_str() );
+	char * paramsVDepUpper = TrajetSimple::toUpper ( params[1].c_str() );
+	char * vArrUpper = TrajetSimple::toUpper ( villeArrivee.c_str() );
+	char * paramsVArrUpper = TrajetSimple::toUpper ( params[2].c_str() );
 
-	if ( decoupage.front().compare ( "S" ) == 0 )
-		//Trajet Simple
+	bool bonneVilleDepart = strcmp ( vDepUpper, paramsVDepUpper ) == 0;
+	bool bonneVilleArrivee = strcmp ( vArrUpper, paramsVArrUpper ) == 0;
+
+	delete[] vDepUpper;
+	delete[] vArrUpper;
+	delete[] paramsVDepUpper;
+	delete[] paramsVArrUpper;
+	
+	// Gestion des differents cas
+	if( estCompose )
 	{
-		decoupage.pop();
-		string villeDepart, villeArrivee, moyenTransport;
-		villeDepart = decoupage.front();
-		decoupage.pop();
+		int nbTrajets = stoi ( params [ 3 ] );
 
-		villeArrivee = decoupage.front();
-		decoupage.pop();
-		
-		moyenTransport = decoupage.front();
+		if (	optionLecture == ACCEPTEE		||
+			optionLecture == TRAJET_COMPOSE		||
+			( optionLecture == VILLE_DEPART
+				&& bonneVilleDepart )		||
+			( optionLecture == VILLE_ARRIVEE
+				&& bonneVilleArrivee )		||
+			( optionLecture == VILLES
+				&& bonneVilleDepart
+				&& bonneVilleArrivee )
+		   )	// Critere verifie = creation d'objet
+		{
+			TabTrajet * tab = new TabTrajet();
 
-		trajet = new TrajetSimple ( villeDepart.c_str(), 
-			villeArrivee.c_str(), moyenTransport.c_str() );
-		*type = SIMPLE;
+			for ( int i = 0; i < nbTrajets; i++)
+			{
+
+				Trajet *t = lectureTrajet ( fichier,
+						ACCEPTEE );
+				// On suppose que le trajet compose est
+				//	correct (les villes de depart
+				//	et d'arrivee correspondent bien
+				//	entre chaque trajet)
+				tab->AjouterTrajet ( t );
+			}
+			return new TrajetCompose ( tab );
+		}
+		else	// Sinon on lit les trajets sans creer d'objet
+		{
+			for ( int i = 0; i < nbTrajets; i++)
+			{
+				lectureTrajet ( fichier,
+					REFUSEE );
+			}
+			return nullptr;
+		}
 	}
 	else
-		//Trajet compose
 	{
-		decoupage.pop();
-		decoupage.pop();
-		decoupage.pop();
-
-		//Nombre de trajets du trajet compose
-		int nbTrajets = stoi ( decoupage.front() );
-		
-		TabTrajet * tab = new TabTrajet ();
-		TypeTrajet * typeVide = new TypeTrajet;
-		
-		//On lit tous les trajets
-		for ( int i = 0; i < nbTrajets; i++ )
+		if (    optionLecture == ACCEPTEE		||
+			optionLecture == TRAJET_SIMPLE		||
+			( optionLecture == VILLE_DEPART
+				&& bonneVilleDepart )		||
+			( optionLecture == VILLE_ARRIVEE
+				&& bonneVilleArrivee )		||
+			( optionLecture == VILLES
+				&& bonneVilleDepart
+				&& bonneVilleArrivee )
+		   )	// Critere verifie = creation d'objet
 		{
-			tab->AjouterTrajet ( lectureTrajet ( fichier, typeVide ) );
+			return new TrajetSimple ( params[1].c_str(),
+				params[2].c_str(), params[3].c_str());
+
 		}
-		delete typeVide;
-
-		trajet = new TrajetCompose ( tab );
-		*type = COMPOSE;
+		else	// On ne cree pas d'objet
+		{
+			return nullptr;
+		}
+		
 	}
-
-	return trajet;
 }
 
 
@@ -649,26 +668,31 @@ void Catalogue::saisirTexte ( char * destination, unsigned int tailleMax )
 	} while ( !saisieJuste );
 }
 
-
-queue < string > Catalogue::decouperString ( const string & lecture,
+vector < string > Catalogue::decouperChaine ( string & chaine,
 		char separateur )
 {
-	queue < string > decoupage;
-	string::const_iterator precCopieIterateur = lecture.cbegin();
-
-	for ( string::const_iterator i = lecture.cbegin(); i != lecture.cend(); i++)
-	{
-		if ( *i == separateur )
+	vector < string > decoupage;
+	string::iterator precCopieIterateur = chaine.begin();
+	
+	for ( string::iterator i = chaine.begin(); i <= chaine.end(); i++)
+	{	
+		if ( ! isprint ( *i ) || *i <= 0 )
+			// Suppression des caracteres non imprimables
 		{
-			decoupage.emplace ( precCopieIterateur, i );
+			chaine.erase ( i - chaine.begin () );
+		}
+		else if ( *i == separateur)
+		{
+			decoupage.emplace_back ( precCopieIterateur, i );
 			precCopieIterateur = i + 1;//On saute le separateur
 		}
+
 	}
 
 	//Pour le dernier decoupage au besoin
-	if ( precCopieIterateur < lecture.cend() )
+	if ( precCopieIterateur < chaine.end() )
 	{
-		decoupage.emplace ( precCopieIterateur, lecture.cend() );	
+		decoupage.emplace_back ( precCopieIterateur, chaine.end() );	
 	}
 
 	return decoupage;	//On ne peut pas renvoyer de reference

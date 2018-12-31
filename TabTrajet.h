@@ -46,6 +46,16 @@ public :
   // Mode d'emploi : Ajoute *t au tableau de pointeur de trajets
 
 
+  bool ExisteDeja ( const Trajet * t ) const;
+  // Mode d'emploi:
+  //	Verifie si le trajet en parametre est deja present dans le TabTrajet
+  //	t : le trajet a comparer.
+  //	retour : true si il existe deja un trajet identique
+  //		false sinon.
+  // Contrat:
+  //	Aucun.
+
+
   //----------------------------------------------- Surcharge d'operateurs --
   //------------------------------------------ Constructeurs - Destructeur --
   TabTrajet (void);

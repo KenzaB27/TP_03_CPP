@@ -11,6 +11,7 @@
 ////////////////////////////////////////////////////////////////////// INCLUDES
 //--------------------------------------------------------- Includes systeme --
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 
@@ -69,6 +70,30 @@ if(nbAllocated == nbTrajets)
   nbTrajets++;
   trajet[nbTrajets - 1] = t;
 } //-- Fin AjouterTrajet
+
+
+bool TabTrajet::ExisteDeja ( const Trajet * t ) const
+{
+	char * t_S = t->toString();
+	cout << " t : \"" << t_S << "\"" << endl; 
+
+	for(int j = 0; j < nbTrajets; j++)
+	{
+		char * l_S = trajet[j]->toString();
+		cout << " \"" << l_S << "\"" << endl;
+
+		if(strcmp(t_S, l_S) == 0)
+		{
+			delete [] t_S;
+			delete [] l_S;
+			return true;
+		}
+		delete [] l_S;
+	}
+	
+	delete [] t_S;
+	return false;
+} //--- Fin de ExisteDeja
 
 
 //--------------------------------------------------- Surcharge d'operateurs --

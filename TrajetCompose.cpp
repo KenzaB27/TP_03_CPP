@@ -33,14 +33,15 @@ void TrajetCompose::Affichage (const char* c) const
 } //----- Fin de Affichage
 
 
-char * TrajetCompose::toString(void)
+char * TrajetCompose::toString(void) const
 {
-	char * description = new char[1000];
+	char * description = new char[ 104 * tabTC->GetNbTrajets() ];
 	description[0]='\0';
 	for(int i=0; i<tabTC->GetNbTrajets(); i++)
 	{
 		char * t_S =tabTC->GetTabTrajet()[i]->toString();
 		strcat(description, t_S);
+		strcat(description, "__");
 		delete [] t_S;
 	}
 	return description;

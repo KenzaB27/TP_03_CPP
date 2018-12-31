@@ -38,7 +38,7 @@ public :
     //  Trajet
 
 
-    char * toString(void);
+    char * toString(void) const;
     // Mode d'emploi : Renvoi une description textuelle sorte d'ID du trajet
     //
     // Contrat : Aucun

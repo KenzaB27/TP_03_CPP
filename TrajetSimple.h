@@ -56,11 +56,22 @@ public :
     //
 
 
-    char * toString(void);
+    char * toString(void) const;
     // Mode d'emploi : Renvoi une description textuelle sorte d'ID du trajet
     //
     // Contrat : Aucun
     //
+
+
+    static char * toUpper ( const char * chaine );
+    // Mode d'emploi :
+    //  Permet de creer une copie de la chaine de caractere qui est en
+    //      majuscule.
+    //  chaine : la chaine de caractere a copier en majuscule
+    //  retour : copie de la chaine en entree, en majuscule.
+    //          La suppression du pointeur est a la charge du client
+    // Contrat :
+    //  Format chaine de caractere en entree
 
 
     //----------------------------------------------- Surcharge d'operateurs --
@@ -78,17 +89,6 @@ public :
 ///////////////////////////////////////////////////////////////////////// PRIVE
 protected :
     //--------------------------------------------------- Methodes protegees --
-    static char * toUpper ( char * chaine );
-    // Mode d'emploi :
-    //  Permet de creer une copie de la chaine de caractere qui est en
-    //      majuscule.
-    //  chaine : la chaine de caractere a copier en majuscule
-    //  retour : copie de la chaine en entree, en majuscule.
-    //          La suppression du pointeur est a la charge du client
-    // Contrat :
-    //  Format chaine de caractere en entree
-
-
     //--------------------------------------------------- Attributs proteges --
     char* villeDepart;
     // Chaine de caractere qui represente la ville de depart
