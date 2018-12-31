@@ -506,12 +506,13 @@ Catalogue::~Catalogue ()
 void Catalogue::recupereTrajets ( ifstream & fichier, unsigned int nbTrajets )
 {
 	cout << "Recuperation de tous les trajets :" << endl;
-
+	
+	// On parcourt tous les trajets et on les ajoute si possible
 	for ( unsigned int i = 0; i < nbTrajets; i++ )
 	{
 		Trajet * t = lectureTrajet ( fichier, ACCEPTEE );
 
-		if ( ! liste.ExisteDeja ( t ) )
+		if ( t != nullptr && ! liste.ExisteDeja ( t ) )
 		{
 			liste.AjouterTrajet ( t );
 			cout << "Ajout de : ";
@@ -519,7 +520,10 @@ void Catalogue::recupereTrajets ( ifstream & fichier, unsigned int nbTrajets )
 		}
 		else
 		{
-			delete t;
+			if( t != nullptr )
+			{
+				delete t;
+			}
 		}
 	}
 }
@@ -528,6 +532,41 @@ void Catalogue::recupereTrajets ( ifstream & fichier, unsigned int nbTrajets )
 void Catalogue::recupereTrajetsType ( ifstream & fichier,
 	unsigned int nbTrajets )
 {
+	cout << "Recuperation de tous les trajets en fonction du type :"
+		<< endl;
+	cout << "Saisissez le typ de trajet" << endl;
+	cout << "1. Trajets simples" << endl;
+	cout << "2. Trajets composes" << endl;
+
+	int choix = 0;
+	while ( ! ( cin >> choix ) || ( choix != 1 && choix != 2 ) )
+	{
+		cin.clear();
+		cin.ignore(1000, '\n');
+		cout << "Saisissez un chiffre entre 1 et 2 !" << endl;
+	}
+	OptionLecture option = ( choix == 1 ) ? TRAJET_SIMPLE : TRAJET_COMPOSE;
+
+	// On lit les trajets et on recupere ceux qui marchent
+	//	(simple ou compose)
+	for ( unsigned int i = 0; i < nbTrajets; i++ )
+	{
+		Trajet * t = lectureTrajet ( fichier, option );
+
+		if ( t != nullptr && ! liste.ExisteDeja ( t ) )
+		{
+			liste.AjouterTrajet ( t );
+			cout << "Ajout de : ";
+			t->Affichage();
+		}
+		else
+		{
+			if( t != nullptr )
+			{
+				delete t;
+			}
+		}
+	}
 
 }
 

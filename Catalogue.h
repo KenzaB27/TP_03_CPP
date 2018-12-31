@@ -195,8 +195,9 @@ protected :
     // Mode d'emploi :
     //	Permet de decouper une chaine de caracteres en plusieurs morceaux, 
     //		suivant un caractere separateur.
-    //	chaine : la chaine de caracteres a decouper. A la fin, elle ne 
-    //		possedera plus de caracteres non imprimables
+    //	chaine : la chaine de caracteres a decouper. La chaine est modifiee
+    //		pendant la methode, on supprime tous les caracteres
+    //		non imprimables \n, \r ...
     //	separateur : le caractere qui separer les morceaux (il ne sera pas
     //		recopie)
     //	retour : un vecteur de string qui contient les informations decoupees.
