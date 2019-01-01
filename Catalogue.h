@@ -25,13 +25,23 @@ typedef enum {  ACCEPTEE,	// Creation de trajet dans tous les cas
 		REFUSEE,	// Pas de creation de trajet
 		TRAJET_SIMPLE,	// Creation d'un trajet s'il est simple
 		TRAJET_COMPOSE,	// Creation de trajet s'il est compose
-		VILLE_DEPART,	// Creation de trajet si la ville de depart
-				//	correspond
-		VILLE_ARRIVEE,	// Creation de trajet si la ville d'arrivee
-				//	correspond
-		VILLES		// Creation de trajet si la ville de depart et
-				//	d'arrivee correspondent
+		VILLE_DEPART,	// Creation de trajet si la ville de depart correspond
+		VILLE_ARRIVEE,	// Creation de trajet si la ville d'arrivee correspond
+		VILLES// Creation de trajet si la ville de depart et d'arrivee correspondent
 	} OptionLecture;
+
+typedef enum
+	{
+		SAUVEGARDE_COMPLETE,//Sauvegarde de tous les trajets du catalogue courant
+	//	MODE_ECRITURE_TRUNC,// Sauvegarde du catalogue courant dans un fichier vide
+	//	MODE_LEC_ECRITURE, // Mise à jour d'un fichier déja existant - Mise à Jour
+		// des métadonnées et sauvegarde des trajets non existants - écriture en ate
+		TRAJET_SIMPLE_ECR,	// Sauvegarde du trajet s'il est simple
+		TRAJET_COMPOSE_ECR,// Sauvegarde du trajet s'il est compose
+		VILLE_DEPART_ECR,	//Sauvegarde du trajet si la ville de depart	correspond
+		VILLE_ARRIVEE_ECR,// Sauvegarde du trajet si la ville d'arrivee correspond
+		VILLES_ECR//Sauvegarde du trajet si la ville de depart et d'arrivee correspondent
+	} OptionEcriture;
 
 
 //-----------------------------------------------------------------------------
@@ -77,12 +87,7 @@ public :
 
 
     void MenuCatalogue(void);
-    // Mode d'emploi : implémente l'interface principale du catalogue
-
-
-    void Ecriture(string nomFichier);
-    // Mode d'emploi :
-    //
+    // Mode d'emploi : implémente l'interface principale du catalogue.
 
 
     void LectureTrajets();
@@ -92,6 +97,15 @@ public :
     //		selections des trajets.
     // Contrat :
     //	Aucun contrat.
+
+		void EcritureTrajets();
+		// Mode d'emploi :
+		//	Implemente l'interface d'écriture de trajets a partir du catalogue
+		//  courant dans un fichier.
+		//	L'utilisateur devra choisir le fichier de sauvegarde ainsi que les criteres
+		//  d'écriture des trajets qu'ils souhaitent sauvegarder.
+		// Contrat :
+		//	Aucun contrat.
 
 
     //----------------------------------------------- Surcharge d'operateurs --
@@ -180,6 +194,67 @@ protected :
     //	Le format du fichier doit etre correct et contenir un trajet lisible a
     //		la position du curseur.
 
+		//----------- Methodes de sauvegarde des trajets par criteres
+    void sauvegardeTrajets ( ofstream & fichier);
+    // Mode d'emploi :
+    //	Sauvegarde tous les trajets (simple et composes) du catalogue courant
+    //	fichier : le fichier dans lequel la sauvegarde sera réalisée
+    // Contrat :
+    //	Le fichier doit etre vide, le cas échéant, son contenu sera écrasé
+    //  pour laisser place à la nouvelle sauvegarde.
+
+
+    void sauvegardeTrajetsType ( ofstream & fichier);
+    // Mode d'emploi :
+    //	Sauvegarde tous les trajets du type (simple ou composes) specifie
+    //	par l'utilisateur
+    //	fichier :  le fichier dans lequel la sauvegarde sera réalisée
+    // Contrat :
+		//	Le fichier doit etre vide, le cas échéant, son contenu sera écrasé
+		//  pour laisser place à la nouvelle sauvegarde.
+
+
+    void sauvegardeTrajetsVille ( ofstream & fichier);
+    // Mode d'emploi :
+    // Sauvegarde tous les trajets qui correspondent a la ville de depart/
+    //		d'arrivee specifiees par l'utilisateur
+    //	fichier :  le fichier dans lequel la sauvegarde sera réalisée
+    // Contrat :
+		//	Le fichier doit etre vide, le cas échéant, son contenu sera écrasé
+		//  pour laisser place à la nouvelle sauvegarde.
+
+
+    void sauvegardeTrajetsIntervalle ( ofstream & fichier);
+    // Mode d'emploi :
+    //	Sauvegarde tous les trajets dans l'intervalle specifie par l'utilisateur
+		//	fichier :  le fichier dans lequel la sauvegarde sera réalisée
+		// Contrat :
+		//	Le fichier doit etre vide, le cas échéant, son contenu sera écrasé
+		//  pour laisser place à la nouvelle sauvegarde.
+
+
+    static bool ecritureTrajet (  ofstream & fichier,
+																	string description,
+    															OptionEcriture optionEcriture,
+																	string villeDepart = "" ,
+																	string villeArrivee = "" );
+    // Mode d'emploi :
+    //	Permet d'ecrire la descprition complète du catalogue courant conformément
+    //	à l'option d'ecriture sélectionnée par l'utilisateur dans le fichier
+		// de sauvegarde
+    //	fichier :  le fichier dans lequel la sauvegarde sera réalisée
+    //	optionEcriture : l'option d'écriture  dans le fichier (voir la description
+    //		de l'enumeration en haut du fichier)
+    //	villeDepart : specification de la ville de depart (uniquement pour
+    //		VILLE_DEPART et VILLES).
+    //	villeArrivee : specification de la ville d'arrivee (uniquement pour
+    //		VILLE_ARRIVEE et VILLES).
+		// bool : retourne un bool qui indique la correspondance de la description aux critères
+    // Contrat :
+		//	Le fichier doit etre vide, le cas échéant, son contenu sera écrasé
+		//  pour laisser place à la nouvelle sauvegarde.
+
+
 
     static void saisirTexte ( char * destination, unsigned int tailleMax );
     // Mode d'emploi
@@ -205,15 +280,26 @@ protected :
     // Contrat :
     //	Aucun contrat.
 
-
+		string DescriptionCatalogue (OptionLecture optionEcriture);
+		// Mode d'emploi :
+		//	Fournit la description du catalogue courant:
+		//	La première ligne représente des métadonnées en cohérence avec l'option
+		//  d'ecriture choisie par l'utilisateur.
+		//	les lignes suivantes représentent la description de chacun des trajets
+		//  à sauvegarder.
+		// Contrat :
+		//	Aucun contrat.
     void freeTab(char ** tab , int size);
     // Mode d'emploi : permet de libérer les tableaux de chaines de caractères
     //		utilisée pour stocker les variables récupérées du flux cin
 
 
     //--------------------------------------------------- Attributs proteges --
-    TabTrajet liste;
-    // Tableau des trajets du catalogue
+    TabTrajet liste;  // Tableau des trajets du catalogue
+		bool presentTS ;  // booléen pour les tests d'existence des trajets simples
+										// dans le catalogue courant
+		bool presentTC ; // booléen pour les tests d'existence des trajets composés
+										// dans le catalogue courant
 };
 
 //------------------------------- Autres définitions dépendantes de <Catalogue>

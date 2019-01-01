@@ -25,7 +25,7 @@ void TrajetCompose::Affichage (const char* c) const
 	Trajet::Affichage("TC : ");
 	cout << "le trajet est compose de " << tabTC->GetNbTrajets()
 			 << " trajets : " << endl;
-	cout << endl ; 
+	cout << endl ;
 	for (int i = 0; i < tabTC->GetNbTrajets(); i++)
 	{
 		tabTC->GetTabTrajet()[i]->Affichage(c);
@@ -80,7 +80,7 @@ string TrajetCompose::DescriptionTrajet(void)
 	string description = "C_"+(string)(GetVilleDepart()) +"_"+(string)(GetVilleArrive())+"_"+ to_string (tabTC->GetNbTrajets())+"\n";
 	for(int i=0; i<tabTC->GetNbTrajets(); i++)
 	{
-		description+=(tabTC->GetTabTrajet()[i]->DescriptionTrajet() +"\n");
+		description+=(tabTC->GetTabTrajet()[i]->DescriptionTrajet());
 	}
 	return description;
 }//-- Fin DescriptionTrajet
