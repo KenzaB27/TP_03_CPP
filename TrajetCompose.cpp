@@ -23,8 +23,9 @@ using namespace std;
 void TrajetCompose::Affichage (const char* c) const
 {
 	Trajet::Affichage("TC : ");
-	cout << "Le trajet est compose de " << tabTC->GetNbTrajets()
+	cout << "le trajet est compose de " << tabTC->GetNbTrajets()
 			 << " trajets : " << endl;
+	cout << endl ; 
 	for (int i = 0; i < tabTC->GetNbTrajets(); i++)
 	{
 		tabTC->GetTabTrajet()[i]->Affichage(c);
@@ -74,15 +75,15 @@ TabTrajet* TrajetCompose::GetTab(void)
 }//-- Fin GetTab
 
 
-/* string TrajetCompose::DescriptionTrajet(void)
+string TrajetCompose::DescriptionTrajet(void)
 {
-	string descrption = "TC_"+villeDepart +"_"+villeArrive+tabTC->GetNbTrajets()+"\n";
+	string description = "C_"+(string)(GetVilleDepart()) +"_"+(string)(GetVilleArrive())+"_"+ to_string (tabTC->GetNbTrajets())+"\n";
 	for(int i=0; i<tabTC->GetNbTrajets(); i++)
 	{
 		description+=(tabTC->GetTabTrajet()[i]->DescriptionTrajet() +"\n");
 	}
-	return description; 
-} */
+	return description;
+}//-- Fin DescriptionTrajet
 
 
 //--------------------------------------------------- Surcharge d'operateurs --

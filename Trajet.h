@@ -11,6 +11,8 @@
 #define Trajet_H
 
 ////////////////////////////////////////////////////////// Interfaces utilisees
+#include <string>
+using namespace std;
 //------------------------------------------------------------------ Constantes
 //----------------------------------------------------------------------- Types
 
@@ -48,7 +50,7 @@ public :
     //
 
 
-    virtual char* GetMoyenTransport(void) const = 0 ;
+    virtual char* GetMoyenTransport(void) const = 0;
     // Mode d'emploi : retourne le moyen de transport employé
     //
     // Contrat : Aucun
@@ -62,22 +64,22 @@ public :
     //
 
 
-    /* virtual string DescriptionTrajet(void)=0 ; 
-    // Mode d'emploi : 
-    //
-    // Contrat : Aucun
-    // */
-
-
-    bool VerifVilleDepart(char * villeDepart); 
-    // Mode d'emploi : 
+    virtual string DescriptionTrajet(void)=0 ;
+    // Mode d'emploi : Renvoi la description d'un trajet
     //
     // Contrat : Aucun
     //
 
 
-    bool VerifVilleArrive(char * villeArrive); 
-    // Mode d'emploi : 
+    bool VerifVilleDepart(char * villeDepart);
+    // Mode d'emploi :
+    //
+    // Contrat : Aucun
+    //
+
+
+    bool VerifVilleArrive(char * villeArrive);
+    // Mode d'emploi :
     //
     // Contrat : Aucun
     //

@@ -32,7 +32,7 @@ const unsigned int TAILLE_CHAR = 100;
 void Catalogue::RechercheEnProfondeur(char* Recherche, TrajetCompose* branche,
 		TabTrajet* res)
 {
-	//Recherches des trajets non etudiés, pas dans le TC de la branche 
+	//Recherches des trajets non etudiés, pas dans le TC de la branche
 	//	d'avant donc
 	for(int i = 0; i < liste.GetNbTrajets(); i++)
 	{
@@ -53,7 +53,7 @@ void Catalogue::RechercheEnProfondeur(char* Recherche, TrajetCompose* branche,
 			delete [] desCurr;
 		}
 		//On ne selectionne que les trajets restants et valides
-		if(!used && 
+		if(!used &&
 				(strcmp(liste.GetTabTrajet()[i]->GetVilleDepart(), branche->GetVilleArrive()) == 0))
 		{
 			TabTrajet * temp_S = new TabTrajet();
@@ -81,7 +81,7 @@ void Catalogue::RechercheEnProfondeur(char* Recherche, TrajetCompose* branche,
 				temp->Affichage();
 			}
 			else{
-				RechercheEnProfondeur(Recherche, temp, res); 
+				RechercheEnProfondeur(Recherche, temp, res);
 				//On recommence le processus sur les trajets restants
 			}
 		}
@@ -189,7 +189,7 @@ void Catalogue::AjoutCompose(void)
 	TabTrajet *tabTS (new TabTrajet());
 	for (int i = 0; i < nbVilles; i++)
 	{
-		cout << "Rentrer la " << (i+1) << 
+		cout << "Rentrer la " << (i+1) <<
 			( ( i + 1 > 1 ) ? "eme" : "ere" )
 			<< " ville : " << endl;
 		tabVille[i] = new char[20];
@@ -199,7 +199,7 @@ void Catalogue::AjoutCompose(void)
 		//On a moins de moyens de transport que de villes
 		if (i != 0)
 		{
-			cout << "Quel est le moyen de transport entre " << tabVille[i - 1] 
+			cout << "Quel est le moyen de transport entre " << tabVille[i - 1]
 				<< " et " << tabVille[i] << " ?" << endl;
 			saisirTexte( tabMT[i-1], 20 );
 			//Le moyen de transport est stocke e l'adresse de la ville d'arrivee,
@@ -320,7 +320,7 @@ void Catalogue::MenuCatalogue(void)
 			cout << "Veuillez saisir un chiffre" << endl;
 		}
 		cin.ignore();
-	
+
 		switch (choix1)
 		{
 			case 1:
@@ -504,7 +504,7 @@ Catalogue::~Catalogue ()
 void Catalogue::recupereTrajets ( ifstream & fichier, unsigned int nbTrajets )
 {
 	cout << "Recuperation de tous les trajets :" << endl;
-	
+
 	// On parcourt tous les trajets et on les ajoute si possible
 	for ( unsigned int i = 0; i < nbTrajets; i++ )
 	{
@@ -579,7 +579,7 @@ void Catalogue::recupereTrajetsVille ( ifstream & fichier,
 	cout << "1. Ville de depart uniquement" << endl;
 	cout << "2. Ville d'arrivee uniquement" << endl;
 	cout << "3. Ville de depart et d'arrivee" << endl;
-	
+
 	// Recuperation du choix
 	int choix = 0;
 	while ( ! ( cin >> choix ) || choix < 1 || choix > 3 )
@@ -602,9 +602,9 @@ void Catalogue::recupereTrajetsVille ( ifstream & fichier,
 			break;
 		case 3:
 			option = VILLES;
-			break;			
+			break;
 	}
-	
+
 	// Villes de depart et d'arrivee
 	char * villeDepart = new char [ TAILLE_CHAR ];
 	villeDepart[0] = '\0';
@@ -616,7 +616,7 @@ void Catalogue::recupereTrajetsVille ( ifstream & fichier,
 		cout << "Ville de depart :" << endl;
 		saisirTexte( villeDepart, TAILLE_CHAR );
 	}
-	
+
 	if ( option == VILLE_ARRIVEE || option == VILLES )
 	{
 		cout << "Ville d'arrivee :" << endl;
@@ -660,7 +660,7 @@ void Catalogue::recupereTrajetsIntervalle ( ifstream & fichier,
 
 	// Borne du bas
 	cout << "Borne basse :" << endl;
-	while ( !( cin >> borneBasse ) 
+	while ( !( cin >> borneBasse )
 		|| borneBasse < 1 || borneBasse > nbTrajets )
 	{
 		cin.clear();
@@ -691,7 +691,7 @@ void Catalogue::recupereTrajetsIntervalle ( ifstream & fichier,
 			// Dans les bornes : on sauvegarde
 		{
 			Trajet * t = lectureTrajet ( fichier, ACCEPTEE );
-				
+
 			if ( t != nullptr && ! liste.ExisteDeja ( t ) )
 			{
 				liste.AjouterTrajet ( t );
@@ -716,14 +716,14 @@ void Catalogue::recupereTrajetsIntervalle ( ifstream & fichier,
 
 Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
 	OptionLecture optionLecture, string villeDepart, string villeArrivee )
-{	
+{
 	// Dans tous les cas, on lit le trajet
 	string chaineTrajet;
 	getline(fichier, chaineTrajet);
 	vector <string> params = decouperChaine ( chaineTrajet );
 
 	bool estCompose = params[ 0 ].compare ( "C" ) == 0;
-	
+
 	// Comparaison des villes sans soucis de la casse des lettres
 	char * vDepUpper = TrajetSimple::toUpper ( villeDepart.c_str() );
 	char * paramsVDepUpper = TrajetSimple::toUpper ( params[1].c_str() );
@@ -737,7 +737,7 @@ Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
 	delete[] vArrUpper;
 	delete[] paramsVDepUpper;
 	delete[] paramsVArrUpper;
-	
+
 	// Gestion des differents cas
 	if( estCompose )
 	{
@@ -800,7 +800,7 @@ Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
 		{
 			return nullptr;
 		}
-		
+
 	}
 }//--- Fin de lectureTrajet
 
@@ -842,9 +842,9 @@ vector < string > Catalogue::decouperChaine ( string & chaine,
 {
 	vector < string > decoupage;
 	string::iterator precCopieIterateur = chaine.begin();
-	
+
 	for ( string::iterator i = chaine.begin(); i <= chaine.end(); i++)
-	{	
+	{
 		if ( ! isprint ( *i ) || *i <= 0 )
 			// Suppression des caracteres non imprimables
 		{
@@ -861,7 +861,7 @@ vector < string > Catalogue::decouperChaine ( string & chaine,
 	//Pour le dernier decoupage au besoin
 	if ( precCopieIterateur < chaine.end() )
 	{
-		decoupage.emplace_back ( precCopieIterateur, chaine.end() );	
+		decoupage.emplace_back ( precCopieIterateur, chaine.end() );
 	}
 
 	return decoupage;	//On ne peut pas renvoyer de reference

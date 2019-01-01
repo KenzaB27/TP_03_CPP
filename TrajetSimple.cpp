@@ -71,6 +71,12 @@ char * TrajetSimple::toString(void) const
 	   return description;
 }//-- Fin toString
 
+string TrajetSimple::DescriptionTrajet(void)
+{
+	string description = "S_" + (string)villeDepart + "_" + (string)villeArrive + "_" + (string)moyenTransport + "\n";
+	return description;
+}//-- Fin DescriptionTrajet
+
 
 char * TrajetSimple::toUpper ( const char * chaine )
 {

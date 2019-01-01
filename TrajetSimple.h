@@ -62,6 +62,11 @@ public :
     // Contrat : Aucun
     //
 
+    string DescriptionTrajet(void);
+    // Mode d'emploi :
+    //
+    // Contrat : Aucun
+    //
 
     static char * toUpper ( const char * chaine );
     // Mode d'emploi :

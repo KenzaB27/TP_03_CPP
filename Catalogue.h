@@ -27,7 +27,7 @@ typedef enum {  ACCEPTEE,	// Creation de trajet dans tous les cas
 		TRAJET_COMPOSE,	// Creation de trajet s'il est compose
 		VILLE_DEPART,	// Creation de trajet si la ville de depart
 				//	correspond
-		VILLE_ARRIVEE,	// Creation de trajet si la ville d'arrivee 
+		VILLE_ARRIVEE,	// Creation de trajet si la ville d'arrivee
 				//	correspond
 		VILLES		// Creation de trajet si la ville de depart et
 				//	d'arrivee correspondent
@@ -78,10 +78,10 @@ public :
 
     void MenuCatalogue(void);
     // Mode d'emploi : implémente l'interface principale du catalogue
-    
-    
+
+
     void Ecriture(string nomFichier);
-    // Mode d'emploi : 
+    // Mode d'emploi :
     //
 
 
@@ -119,8 +119,8 @@ protected :
     //	Le fichier doit etre du bon format.
     //	nbTrajets doit etre dans les bornes des trajets que l'on peut recuperer
     //		dans le fichier.
-    
-    
+
+
     void recupereTrajetsType ( ifstream & fichier, unsigned int nbTrajets );
     // Mode d'emploi :
     //	Recupere tous les trajets du type (simple ou composes) specifie
@@ -157,8 +157,9 @@ protected :
 
 
     static Trajet * lectureTrajet ( ifstream & fichier,
-    	OptionLecture optionLecture, string villeDepart = "",
-	string villeArrivee = "" );
+    																OptionLecture optionLecture,
+																		string villeDepart = "" ,
+																		string villeArrivee = "" );
     // Mode d'emploi :
     //	Permet de lire un trajet dans le fichier et de creer un objet associe
     //		a ce trajet suivant l'option de lecture renseignee
@@ -176,7 +177,7 @@ protected :
     //		Si aucun trajet n'est cree (option non verifiese, on renvoie
     //			nullptr.
     // Contrat :
-    //	Le format du fichier doit etre correct et contenir un trajet lisible a 
+    //	Le format du fichier doit etre correct et contenir un trajet lisible a
     //		la position du curseur.
 
 
@@ -193,7 +194,7 @@ protected :
     static vector < string > decouperChaine ( string & chaine,
     	char separateur = '_' );
     // Mode d'emploi :
-    //	Permet de decouper une chaine de caracteres en plusieurs morceaux, 
+    //	Permet de decouper une chaine de caracteres en plusieurs morceaux,
     //		suivant un caractere separateur.
     //	chaine : la chaine de caracteres a decouper. La chaine est modifiee
     //		pendant la methode, on supprime tous les caracteres
@@ -203,8 +204,8 @@ protected :
     //	retour : un vecteur de string qui contient les informations decoupees.
     // Contrat :
     //	Aucun contrat.
-    
-    
+
+
     void freeTab(char ** tab , int size);
     // Mode d'emploi : permet de libérer les tableaux de chaines de caractères
     //		utilisée pour stocker les variables récupérées du flux cin
