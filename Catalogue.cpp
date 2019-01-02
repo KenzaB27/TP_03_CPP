@@ -901,8 +901,8 @@ void Catalogue::sauvegardeTrajetsVille ( ofstream & fichier )
 		saisirTexte( villeArrivee, TAILLE_CHAR );
 	}
 
-	ecritureTrajetOption (fichier , option,villeDepart,villeArrivee,
-  	0 , 0,(unsigned int)liste.GetNbTrajets());
+	ecritureTrajetOption (fichier , option, villeDepart, villeArrivee,
+  	0 , 0 ,(unsigned int)liste.GetNbTrajets());
 
 }//--- Fin de sauvegardeTrajetsVille
 
@@ -928,19 +928,19 @@ void Catalogue :: ecritureTrajetOption (ofstream & fichier , OptionLecEcr option
 	bool existeTC = false ;
 	bool existeTS = false ;
 
-	for ( unsigned int i = debut; i <= borneHaute && fichier.good(); i++ )
+	for ( unsigned int i = debut; i < (borneHaute+debut) && fichier.good(); i++ )
 		//Les bornes de i sont decalees : le premier trajet doit avoir
 		//	un indice de 1
 	{
 		if ( i >= borneBasse )
 			// Dans les bornes : on sauvegarde
 		{
-				if (ecritureTrajet (liste.GetTabTrajet()[i-1]->DescriptionTrajet (),
+				if (ecritureTrajet (liste.GetTabTrajet()[i-debut]->DescriptionTrajet (),
 												 option, villeDepart , villeArrivee))
 				{
 					// composition des métadonnées
 					compteur ++ ;
-					string descriptionTr = liste.GetTabTrajet()[i-1]->DescriptionTrajet();
+					string descriptionTr = liste.GetTabTrajet()[i-debut]->DescriptionTrajet();
 					vector <string> params = decouperChaine (descriptionTr);
 					if ( !existeTS )
 					{
@@ -950,9 +950,10 @@ void Catalogue :: ecritureTrajetOption (ofstream & fichier , OptionLecEcr option
 					{
 						existeTC = params[ 0 ].compare ( "C" ) == 0;
 					}
-					description += liste.GetTabTrajet()[i-1]->DescriptionTrajet () ;
+					description += liste.GetTabTrajet()[i-debut]->DescriptionTrajet () ;
 				}
 			}
+		}
 			if (!compteur)
 			{
 				cout << "Aucun trajet du catalogue ne correspond a vos criteres !" << endl ;
@@ -960,7 +961,7 @@ void Catalogue :: ecritureTrajetOption (ofstream & fichier , OptionLecEcr option
 			}
 			fichier << compteur << "_" << existeTS<< "_"	<<existeTC<< endl ;
 			fichier << description ;
-	}
+
 }// ------ Fin de ecritureTrajetOption
 
 
