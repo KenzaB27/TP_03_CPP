@@ -380,6 +380,7 @@ void Catalogue::LectureTrajets()
 
 	string source;
 	getline(cin, source);	//getline pour les noms de fichier avec espaces
+	supprimerEspaceFin (source);
 
 	ifstream fichier;
 	fichier.open(source, ios_base::in);
@@ -504,6 +505,7 @@ void Catalogue::EcritureTrajets()
 
 	string source;
 	getline(cin, source);	//getline pour les noms de fichier avec espaces
+  supprimerEspaceFin(source);
 
 	ofstream fichier;
 	fichier.open(source, ios::out | ios::trunc);
@@ -742,6 +744,9 @@ Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
 
 	bool estCompose = params[ 0 ].compare ( "C" ) == 0;
 
+	supprimerEspaceFin (villeDepart);
+  supprimerEspaceFin (villeArrivee);
+
 	// Comparaison des villes sans soucis de la casse des lettres
 	char * vDepUpper = TrajetSimple::toUpper ( villeDepart.c_str() );
 	char * paramsVDepUpper = TrajetSimple::toUpper ( params[1].c_str() );
@@ -830,7 +835,7 @@ Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
 	}
 }//--- Fin de lectureTrajet
 
-
+// --------------Fin des méthodes de lecture ------------
 
 // ------- Méthodes de sauvegarde ---------
 void Catalogue::sauvegardeTrajets ( ofstream & fichier)
@@ -926,6 +931,8 @@ bool Catalogue::ecritureTrajet ( string description ,
 
 	bool estCompose = params[ 0 ].compare ( "C" ) == 0;
 
+	supprimerEspaceFin (villeDepart);
+  supprimerEspaceFin (villeArrivee);
 	// Comparaison des villes sans soucis de la casse des lettres
 	char * vDepUpper = TrajetSimple::toUpper ( villeDepart.c_str() );
 	char * paramsVDepUpper = TrajetSimple::toUpper ( params[1].c_str() );
@@ -1015,83 +1022,10 @@ void Catalogue :: ecritureTrajetOption (ofstream & fichier , OptionLecEcr option
 
 }// ------ Fin de ecritureTrajetOption
 
+// --------------Fin des méthodes de sauvegarde ------------
 
-// -------- Autres méthodes ----------
-void Catalogue::freeTab ( char ** tab , int size )
-{
-	for ( int i = 0 ; i<size ; i++ )
-	{
-		delete[] tab[i] ;
-	}
-	delete [] tab ;
-}//----- Fin de freeTab
+//---- Méthodes interface utilisateur ------
 
-
-void Catalogue::saisirTexte ( char * destination, unsigned int tailleMax )
-{
-	bool saisieJuste = false;
-	char * c;
-	do
-	{
-		cin.getline( destination, tailleMax );
-
-		for ( c = destination; *c != '\0' && *c!='_'; c++ );
-
-		if(*c=='\0')
-		{
-			saisieJuste = true;
-		}
-		else
-		{
-			cout << "Le caractere '_' est interdit !" << endl;
-		}
-	} while ( !saisieJuste );
-
-}//--- Fin de saisirTexte
-
-
-void Catalogue::supprimerNonImprimable ( string & chaine )
-{
-	for ( string::iterator i = chaine.begin(); i <= chaine.end(); ++i )
-	{
-		if( *i != '\0' && ( ! isprint ( *i ) || *i < 0 ) )
-		// On verifie que *i n'est pas le caractere de fin de chaine
-		// ( non imprimable, mais attendu )
-		{
-			chaine.erase ( i - chaine.begin() );
-			--i;
-		}
-	}
-}//----Fin de supprimerNonImprimable
-
-
-vector < string > Catalogue::decouperChaine ( string & chaine,
-		char separateur )
-{
-	vector < string > decoupage;
-	supprimerNonImprimable ( chaine );
-	string::iterator precCopieIterateur = chaine.begin();
-
-	for ( string::iterator i = chaine.begin(); i <= chaine.end(); ++i)
-	{
-		if ( *i == separateur)
-		{
-			decoupage.emplace_back ( precCopieIterateur, i );
-			precCopieIterateur = i + 1;//On saute le separateur
-		}
-
-	}
-
-	//Pour le dernier decoupage au besoin
-	if ( precCopieIterateur < chaine.end() )
-	{
-		decoupage.emplace_back ( precCopieIterateur, chaine.end() );
-	}
-
-	return decoupage;	//On ne peut pas renvoyer de reference
-}//---- Fin de decouperChaine
-
-//---- Méthodes interface utilisateur 
 void Catalogue::optionUtilisateur (string lecOuEcr , bool existeTS , bool existeTC)
 {
 	//--- Options pour l'utilisateur
@@ -1197,3 +1131,94 @@ while ( !( cin >> borneHaute )
 cin.ignore();	// On supprime le '\n' pour les lectures suivantes
 
 }// ----- Fin de optionIntervalle
+
+// --------------Fin des méthodes d'inteerface utilisateur------------
+
+// -------- Autres méthodes ----------
+void Catalogue::freeTab ( char ** tab , int size )
+{
+	for ( int i = 0 ; i<size ; i++ )
+	{
+		delete[] tab[i] ;
+	}
+	delete [] tab ;
+}//----- Fin de freeTab
+
+
+void Catalogue::saisirTexte ( char * destination, unsigned int tailleMax )
+{
+	bool saisieJuste = false;
+	char * c;
+	do
+	{
+		cin.getline( destination, tailleMax );
+
+		for ( c = destination; *c != '\0' && *c!='_'; c++ );
+
+		if(*c=='\0')
+		{
+			saisieJuste = true;
+		}
+		else
+		{
+			cout << "Le caractere '_' est interdit !" << endl;
+		}
+	} while ( !saisieJuste );
+
+}//--- Fin de saisirTexte
+
+
+void Catalogue::supprimerEspaceFin (string & chaine )
+{
+	string::iterator end = chaine.end() ;
+	end--;
+	if (*end == ' ')
+	{
+		chaine.erase(end);
+	}
+}//--- Fin de supprimerEspaceFin
+
+
+void Catalogue::supprimerNonImprimable ( string & chaine )
+{
+	for ( string::iterator i = chaine.begin(); i <= chaine.end(); ++i )
+	{
+		if( *i != '\0' && ( ! isprint ( *i ) || *i < 0 ) )
+		// On verifie que *i n'est pas le caractere de fin de chaine
+		// ( non imprimable, mais attendu )
+		{
+			chaine.erase ( i - chaine.begin() );
+			--i;
+		}
+	}
+}//----Fin de supprimerNonImprimable
+
+
+vector < string > Catalogue::decouperChaine ( string & chaine,
+		char separateur )
+{
+	vector < string > decoupage;
+	supprimerNonImprimable ( chaine );
+	supprimerEspaceFin (chaine);
+	string::iterator precCopieIterateur = chaine.begin();
+
+	for ( string::iterator i = chaine.begin(); i <= chaine.end(); ++i)
+	{
+		if ( *i == separateur)
+		{
+			decoupage.emplace_back ( precCopieIterateur, i );
+			precCopieIterateur = i + 1;//On saute le separateur
+		}
+
+	}
+
+	//Pour le dernier decoupage au besoin
+	if ( precCopieIterateur < chaine.end() )
+	{
+		decoupage.emplace_back ( precCopieIterateur, chaine.end() );
+	}
+
+	return decoupage;	//On ne peut pas renvoyer de reference
+}//---- Fin de decouperChaine
+
+// --------------Fin des autres méthodes ------------
