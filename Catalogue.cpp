@@ -1220,7 +1220,7 @@ void Catalogue::saisirTexte ( char * destination, unsigned int tailleMax )
 	char * c;
 	do
 	{
-		cin.getline(destination, tailleMax );
+		cin.getline( destination, tailleMax );
 
 		for ( c = destination; *c != '\0' && *c!='_'; c++ );
 
@@ -1233,6 +1233,7 @@ void Catalogue::saisirTexte ( char * destination, unsigned int tailleMax )
 			cout << "Le caractere '_' est interdit !" << endl;
 		}
 	} while ( !saisieJuste );
+
 }//--- Fin de saisirTexte
 
 
