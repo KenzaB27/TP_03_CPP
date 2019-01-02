@@ -27,6 +27,8 @@ using namespace std;
 //------------------------------------------------------------------ CONSTANTES
 const unsigned int TAILLE_CHAR = 100;
 
+//-------- initialisation des variables de classe
+
 //////////////////////////////////////////////////////////////////////// PUBLIC
 //------------------------------------------------------- Methodes publiques --
 void Catalogue::RechercheEnProfondeur(char* Recherche, TrajetCompose* branche,
@@ -257,7 +259,8 @@ void Catalogue::Rechercher(void)
 } //----- Fin de Rechercher
 
 
-void Catalogue::MenuTrajet(void) {
+void Catalogue::MenuTrajet(void)
+{
 	int choix2 = 0;
 	do
 	{
@@ -415,16 +418,7 @@ void Catalogue::LectureTrajets()
 		return;
 	}
 
-	//--- Options pour l'utilisateur
-	cout << "Choisissez l'option pour le chargement des trajets :" << endl;
-	cout << "1. Tous les trajets" << endl;
-	if( existeTC && existeTS )
-	{
-		cout << "2. Selon le type de trajet" << endl;
-	}
-	cout << "3. Selon la ville de depart/d'arrivee" << endl;
-	cout << "4. Selon un intervalle de trajets" << endl;
-	cout << "Votre choix :" << endl;
+	optionUtilisateur ("de chargement", existeTS , existeTC) ;
 
 	bool choixJuste = false;
 	int choix;
@@ -523,18 +517,7 @@ void Catalogue::EcritureTrajets()
 		return;
 	}
 
-	//--- Options pour l'utilisateur
-	cout << endl;
-	cout << "Choisissez l'option de sauvegarde des trajets :" << endl;
-	cout << "1. Tous les trajets" << endl;
-	if( presentTC && presentTS )
-	{
-		cout << "2. Selon le type de trajet" << endl;
-	}
-	cout << "3. Selon la ville de depart/d'arrivee" << endl;
-	cout << "4. Selon un intervalle de trajets" << endl;
-	cout << "Votre choix :" << endl;
-
+	optionUtilisateur ("de sauvegarde", presentTS , presentTC);
 	bool choixJuste = false;
 	int choix;
 	while ( !choixJuste )
@@ -578,13 +561,12 @@ void Catalogue::EcritureTrajets()
 	}
 
 	fichier.close();
-}//----- Fin de LectureTrajets
-
+}//----- Fin de EcritureTrajets
 
 
 //--------------------------------------------------- Surcharge d'operateurs --
 //---------------------------------------------- Constructeurs - Destructeur --
-Catalogue::Catalogue (void) : liste() , presentTS(false) , presentTC (false)
+Catalogue::Catalogue (void) : liste() , presentTS (false) , presentTC(false)
 {
 #ifdef MAP
 	cout << "Appel au constructeur de <Catalogue>" << endl;
@@ -635,22 +617,7 @@ void Catalogue::recupereTrajets ( ifstream & fichier, unsigned int nbTrajets )
 void Catalogue::recupereTrajetsType ( ifstream & fichier,
 	unsigned int nbTrajets )
 {
-	cout << endl;
-	cout << "Recuperation de tous les trajets en fonction du type :"
-		<< endl;
-	cout << "Saisissez le type de trajet" << endl;
-	cout << "1. Trajets simples" << endl;
-	cout << "2. Trajets composes" << endl;
-
-	int choix = 0;
-	while ( ! ( cin >> choix ) || ( choix != 1 && choix != 2 ) )
-	{
-		cin.clear();
-		cin.ignore(1000, '\n');
-		cout << "Saisissez un chiffre entre 1 et 2 !" << endl;
-	}
-	OptionLecEcr option = ( choix == 1 ) ? TRAJET_SIMPLE : TRAJET_COMPOSE;
-
+	OptionLecEcr option = optionType ("Recuperation" ) ;
 	// On lit les trajets et on recupere ceux qui marchent
 	//	(simple ou compose)
 	for ( unsigned int i = 0; i < nbTrajets && fichier.good() ; i++ )
@@ -678,39 +645,7 @@ void Catalogue::recupereTrajetsType ( ifstream & fichier,
 void Catalogue::recupereTrajetsVille ( ifstream & fichier,
 	unsigned int nbTrajets )
 {
-	cout << endl ;
-	cout << "Recuperation du trajet en fonction des villes de depart"
-		<< " et d'arrivee" << endl;
-	cout << "Saisissez le critere sur les villes de depart et d'arrivee"
-		<< endl;
-	cout << "1. Ville de depart uniquement" << endl;
-	cout << "2. Ville d'arrivee uniquement" << endl;
-	cout << "3. Ville de depart et d'arrivee" << endl;
-
-	// Recuperation du choix
-	int choix = 0;
-	while ( ! ( cin >> choix ) || choix < 1 || choix > 3 )
-	{
-		cin.clear();
-		cin.ignore(1000, '\n');
-		cout << "Saisissez un chiffre entre 1 et 3 !" << endl;
-	}
-	cin.ignore();	//On elimine de '\n'
-
-	// Parametre de lecture du trajet
-	OptionLecEcr option = REFUSEE;
-	switch ( choix )
-	{
-		case 1:
-			option = VILLE_DEPART;
-			break;
-		case 2:
-			option = VILLE_ARRIVEE;
-			break;
-		case 3:
-			option = VILLES;
-			break;
-	}
+	OptionLecEcr option =	optionVille ("Recuperation");
 
 	// Villes de depart et d'arrivee
 	char villeDepart [ TAILLE_CHAR ];
@@ -756,36 +691,9 @@ void Catalogue::recupereTrajetsVille ( ifstream & fichier,
 void Catalogue::recupereTrajetsIntervalle ( ifstream & fichier,
 	unsigned int nbTrajets )
 {
-	cout << "Recuperation des trajets suivant un intervalle" << endl;
-	cout << "Saisissez des nombres entre 1 et " << nbTrajets << endl;
-
 	unsigned int borneBasse = 0;
 	unsigned int borneHaute = 0;
-
-	// Borne du bas
-	cout << "Borne basse :" << endl;
-	while ( !( cin >> borneBasse )
-		|| borneBasse < 1 || borneBasse > nbTrajets )
-	{
-		cin.clear();
-		cin.ignore ( 1000, '\n' );
-		cout << "Saisissez des nombres entre 1 et " << nbTrajets
-			<< " !" << endl;
-	}
-
-	// Borne du haut
-	cout << "Borne haute entre " << borneBasse << " et " << nbTrajets
-		<< endl;
-	while ( !( cin >> borneHaute )
-		|| borneHaute < borneBasse || borneHaute > nbTrajets )
-	{
-		cin.clear();
-		cin.ignore ( 1000, '\n' );
-		cout << "Saisissez un nombre entre " << borneBasse << " et "
-			<< nbTrajets << " !" << endl;
-	}
-	cin.ignore();	// On supprime le '\n' pour les lectures suivantes
-
+	optionIntervalle ( "Recuperation", borneBasse, borneHaute , nbTrajets);
 	// On parcourt tous les trajets
 	for ( unsigned int i = 1; i <= borneHaute && fichier.good(); i++ )
 		//Les bornes de i sont decalees : le premier trajet doit avoir
@@ -877,6 +785,10 @@ Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
 				//	entre chaque trajet)
 				tab->AjouterTrajet ( t );
 			}
+			if ( !presentTC)
+			{
+				presentTC = true ;
+			}
 			return new TrajetCompose ( tab );
 		}
 		else	// Sinon on lit les trajets sans creer d'objet
@@ -902,6 +814,10 @@ Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
 				&& bonneVilleArrivee )
 		   )	// Critere verifie = creation d'objet
 		{
+			if ( !presentTS)
+			{
+				presentTS = true ;
+			}
 			return new TrajetSimple ( params[1].c_str(),
 				params[2].c_str(), params[3].c_str());
 
@@ -920,9 +836,10 @@ Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
 void Catalogue::sauvegardeTrajets ( ofstream & fichier)
 {
 	cout << "Sauvegarde de tous les trajets :" << endl;
-	fichier << liste.GetNbTrajets() << "_" << presentTS << "_" << presentTS << "\n";
+	fichier << liste.GetNbTrajets() << "_" << presentTS << "_" << presentTC << "\n";
 	// On parcourt tous les trajets et on ajoute leur descrpition dans le fichier
-	for ( unsigned int i = 0; i < (unsigned int)liste.GetNbTrajets(); i++ )
+	for ( unsigned int i = 0; i < (unsigned int)liste.GetNbTrajets()
+	&& fichier.good(); i++ )
 	{
 		if (ecritureTrajet (liste.GetTabTrajet()[i]->DescriptionTrajet (),
 		 								 		SAUVEGARDE_COMPLETE))
@@ -930,32 +847,18 @@ void Catalogue::sauvegardeTrajets ( ofstream & fichier)
 		 fichier << liste.GetTabTrajet()[i]->DescriptionTrajet();
 	 }
 	}
-	fichier.close();
 }//--- Fin de sauvegardeTrajets
 
 
 void Catalogue::sauvegardeTrajetsType ( ofstream & fichier)
 {
-	cout << endl ;
-	cout << "Sauvegarde de tous les trajets en fonction du type :"<< endl;
-	cout << "Saisissez le type de trajet :" << endl;
-	cout << "1. Trajets simples." << endl;
-	cout << "2. Trajets composes." << endl ;
-
-	int choix = 0;
-	while ( ! ( cin >> choix ) || ( choix != 1 && choix != 2 ) )
-	{
-		cin.clear();
-		cin.ignore(1000, '\n');
-		cout << "Saisissez un chiffre entre 1 et 2 !" << endl;
-	}
-	OptionLecEcr option = ( choix == 1 ) ? TRAJET_SIMPLE : TRAJET_COMPOSE;
-
+	OptionLecEcr option = optionType ("Sauvegarde") ;
 	unsigned int compteur = 0 ; // compteur des trajets réellement sauvegardés
 	string description= "" ;
 	// On parcourt tous les trajets et on ajoute la descrpition dans le fichier
 	// de ceux qui correspondent aux critères
-	for ( unsigned int i = 0; i <(unsigned int) liste.GetNbTrajets(); i++ )
+	for ( unsigned int i = 0; i <(unsigned int) liste.GetNbTrajets()
+	 && fichier.good() ; i++ )
 	{
 		if (ecritureTrajet (liste.GetTabTrajet()[i]->DescriptionTrajet (),
 		 								 option))
@@ -964,54 +867,21 @@ void Catalogue::sauvegardeTrajetsType ( ofstream & fichier)
 			description += liste.GetTabTrajet()[i]->DescriptionTrajet () ;
 		}
 	}
-	bool existeTS = (choix == 1 )? 1 : 0  ;
-	bool existeTC = (choix == 2 )? 1 : 0  ;
 	if (!compteur)
 	{
 		cout << "Aucun trajet du catalogue ne correspond a vos criteres !" << endl ;
 		return ;
 	}
+	bool existeTS = (option == TRAJET_SIMPLE )? 1 : 0  ;
+	bool existeTC = (option == TRAJET_COMPOSE )? 1 : 0  ;
 	fichier << compteur << "_" << existeTS << "_" << existeTC << endl ;
 	fichier << description ;
-	fichier.close();
 }//--- Fin de sauvegardeTrajetsType
 
 
 void Catalogue::sauvegardeTrajetsVille ( ofstream & fichier )
 {
-	cout << endl ;
-	cout << "Sauvegarde des trajets en fonction des villes de depart"
-		<< " et d'arrivee." << endl << endl ;
-	cout << "Saisissez le critere sur les villes de depart et d'arrivee"
-		<< endl << endl ;
-	cout << "1. Ville de depart uniquement" << endl;
-	cout << "2. Ville d'arrivee uniquement" << endl;
-	cout << "3. Ville de depart et d'arrivee" << endl;
-
-	// Recuperation du choix
-	int choix = 0;
-	while ( ! ( cin >> choix ) || choix < 1 || choix > 3 )
-	{
-		cin.clear();
-		cin.ignore(1000, '\n');
-		cout << "Saisissez un chiffre entre 1 et 3 !" << endl;
-	}
-	cin.ignore();	//On elimine de '\n'
-
-	// Parametre de lecture du trajet
-	OptionLecEcr option = SAUVEGARDE_COMPLETE;
-	switch ( choix )
-	{
-		case 1:
-			option = VILLE_DEPART;
-			break;
-		case 2:
-			option = VILLE_ARRIVEE;
-			break;
-		case 3:
-			option = VILLES;
-			break;
-	}
+	OptionLecEcr option =	optionVille ( "Sauvegarde");
 
 	// Villes de depart et d'arrivee
 	char villeDepart [ TAILLE_CHAR ];
@@ -1030,89 +900,43 @@ void Catalogue::sauvegardeTrajetsVille ( ofstream & fichier )
 		cout << "Ville d'arrivee :" << endl;
 		saisirTexte( villeArrivee, TAILLE_CHAR );
 	}
-	unsigned int compteur = 0 ; // compteur des trajets réellement sauvegardés
-	string description= "";
-	bool existeTC = false ;
-	bool existeTS = false ;
-	// On parcourt tous les trajets et on garde ceux qui sont bons
-	for ( unsigned int i = 0; i < (unsigned int)liste.GetNbTrajets(); i++ )
-	{
-		if (ecritureTrajet (liste.GetTabTrajet()[i]->DescriptionTrajet(),
-										 option, villeDepart , villeArrivee))
-		{
-			cout << i << endl;
-			// composition des métadonnées
-			compteur ++ ;
-			string descriptionTr = liste.GetTabTrajet()[i]->DescriptionTrajet();
-			vector <string> params = decouperChaine(descriptionTr);
-			if ( !existeTS )
-			{
-				existeTS = params[ 0 ].compare ( "S" ) == 0;
-			}
-			if ( !existeTC )
-			{
-				existeTS = params[ 0 ].compare ( "C" ) == 0;
-			}
-			description += liste.GetTabTrajet()[i]->DescriptionTrajet () ;
-		}
-	}
-	if (!compteur)
-	{
-		cout << "Aucun trajet du catalogue ne correspond a vos criteres !" << endl ;
-		return ;
-	}
-	fichier << compteur << "_" <<existeTS << "_"<<existeTC<< endl ;
-	fichier << description ;
-	fichier.close();
+
+	ecritureTrajetOption (fichier , option,villeDepart,villeArrivee,
+  	0 , 0,(unsigned int)liste.GetNbTrajets());
+
 }//--- Fin de sauvegardeTrajetsVille
 
 
 void Catalogue::sauvegardeTrajetsIntervalle ( ofstream & fichier)
 {
-	cout << "Sauvegarde des trajets suivant un intervalle" << endl;
-	cout << "Saisissez des nombres entre 1 et " << liste.GetNbTrajets() << endl;
-
 	unsigned int borneBasse = 0;
 	unsigned int borneHaute = 0;
+	optionIntervalle ( "Sauvegarde" , borneBasse , borneHaute ,
+	(unsigned int)liste.GetNbTrajets());
+	ecritureTrajetOption (fichier , SAUVEGARDE_COMPLETE , "", "" , 1 ,
+	  borneBasse, borneHaute );
 
-	// Borne du bas
-	cout << "Borne basse :" << endl;
-	while ( !( cin >> borneBasse )
-		|| borneBasse < 1 || borneBasse > (unsigned int)liste.GetNbTrajets() )
-	{
-		cin.clear();
-		cin.ignore ( 1000, '\n' );
-		cout << "Saisissez des nombres entre 1 et " << liste.GetNbTrajets()
-			<< " !" << endl;
-	}
+}//--- Fin de recupereTrajetsIntervalle
 
-	// Borne du haut
-	cout << "Borne haute entre " << borneBasse << " et " << liste.GetNbTrajets()
-		<< endl;
-	while ( !( cin >> borneHaute )
-		|| borneHaute < borneBasse || borneHaute >(unsigned int) liste.GetNbTrajets() )
-	{
-		cin.clear();
-		cin.ignore ( 1000, '\n' );
-		cout << "Saisissez un nombre entre " << borneBasse << " et "
-			<< liste.GetNbTrajets() << " !" << endl;
-	}
-	cin.ignore();	// On supprime le '\n' pour les lectures suivantes
-
+void Catalogue :: ecritureTrajetOption (ofstream & fichier , OptionLecEcr option,
+	string villeDepart, string villeArrivee , unsigned int debut ,
+	unsigned int  borneBasse , unsigned int  borneHaute )
+{
+	// variables relatifs à la composition des métadonnées
 	unsigned int compteur = 0 ; // compteur des trajets réellement sauvegardés
-	string description= "" ;
+	string description= "";
 	bool existeTC = false ;
 	bool existeTS = false ;
-	// On parcourt tous les trajets
-	for ( unsigned int i = 1; i <= (unsigned int)liste.GetNbTrajets(); i++ )
+
+	for ( unsigned int i = debut; i <= borneHaute && fichier.good(); i++ )
 		//Les bornes de i sont decalees : le premier trajet doit avoir
 		//	un indice de 1
 	{
-		if ( i >= borneBasse && i <= borneHaute )
+		if ( i >= borneBasse )
 			// Dans les bornes : on sauvegarde
 		{
 				if (ecritureTrajet (liste.GetTabTrajet()[i-1]->DescriptionTrajet (),
-												 SAUVEGARDE_COMPLETE))
+												 option, villeDepart , villeArrivee))
 				{
 					// composition des métadonnées
 					compteur ++ ;
@@ -1136,9 +960,8 @@ void Catalogue::sauvegardeTrajetsIntervalle ( ofstream & fichier)
 			}
 			fichier << compteur << "_" << existeTS<< "_"	<<existeTC<< endl ;
 			fichier << description ;
-			fichier.close();
 	}
-}//--- Fin de recupereTrajetsIntervalle
+}// ------ Fin de ecritureTrajetOption
 
 
 bool Catalogue::ecritureTrajet ( string description ,
@@ -1236,7 +1059,7 @@ void Catalogue::supprimerNonImprimable ( string & chaine )
 			--i;
 		}
 	}
-}//--- Fin de supprimerNonImprimable
+}//----Fin de supprimerNonImprimable
 
 
 vector < string > Catalogue::decouperChaine ( string & chaine,
@@ -1263,4 +1086,111 @@ vector < string > Catalogue::decouperChaine ( string & chaine,
 	}
 
 	return decoupage;	//On ne peut pas renvoyer de reference
-}//--- Fin de decouperChaine
+}//---- Fin de decouperChaine
+
+
+void Catalogue::optionUtilisateur (string lecOuEcr , bool existeTS , bool existeTC)
+{
+	//--- Options pour l'utilisateur
+	cout << "Choisissez l'option pour "<<lecOuEcr<<" des trajets :" << endl;
+	cout << "1. Tous les trajets" << endl;
+	if( existeTC && existeTS )
+	{
+		cout << "2. Selon le type de trajet" << endl;
+	}
+	cout << "3. Selon la ville de depart/d'arrivee" << endl;
+	cout << "4. Selon un intervalle de trajets" << endl;
+	cout << "Votre choix :" << endl;
+}// ----- Fin de optionUtilisateur
+
+
+OptionLecEcr Catalogue::optionType(string lecOuEcr )
+{
+	int choix=0;
+	cout << endl;
+	cout << lecOuEcr <<" de tous les trajets en fonction du type :"	<< endl;
+	cout << "Saisissez le type de trajet" << endl;
+	cout << "1. Trajets simples" << endl;
+	cout << "2. Trajets composes" << endl;
+
+	while ( ! ( cin >> choix ) || ( choix != 1 && choix != 2 ) )
+	{
+		cin.clear();
+		cin.ignore(1000, '\n');
+		cout << "Saisissez un chiffre entre 1 et 2 !" << endl;
+	}
+	OptionLecEcr option = ( choix == 1 ) ? TRAJET_SIMPLE : TRAJET_COMPOSE;
+	return option ;
+}// ----- Fin de optionType
+
+
+OptionLecEcr Catalogue::optionVille ( string lecOuEcr)
+{
+	cout << endl ;
+	cout << lecOuEcr << " du trajet en fonction des villes de depart"
+		<< " et d'arrivee" << endl;
+	cout << "Saisissez le critere sur les villes de depart et d'arrivee"
+		<< endl;
+	cout << "1. Ville de depart uniquement" << endl;
+	cout << "2. Ville d'arrivee uniquement" << endl;
+	cout << "3. Ville de depart et d'arrivee" << endl;
+
+	// Recuperation du choix
+	int choix = 0;
+	while ( ! ( cin >> choix ) || choix < 1 || choix > 3 )
+	{
+		cin.clear();
+		cin.ignore(1000, '\n');
+		cout << "Saisissez un chiffre entre 1 et 3 !" << endl;
+	}
+	cin.ignore();	//On elimine de '\n'
+
+	// Parametre de lecture du trajet
+	OptionLecEcr option = REFUSEE;
+	switch ( choix )
+	{
+		case 1:
+			option = VILLE_DEPART;
+			break;
+		case 2:
+			option = VILLE_ARRIVEE;
+			break;
+		case 3:
+			option = VILLES;
+			break;
+		}
+	 return option ;
+
+}// ------- Fin de optionVille
+
+
+void Catalogue::optionIntervalle ( string lecOuEcr, unsigned int & borneBasse ,
+	 unsigned int & borneHaute , unsigned int nbTrajets)
+{
+cout << lecOuEcr << " des trajets suivant un intervalle" << endl;
+cout << "Saisissez des nombres entre 1 et " << nbTrajets << endl;
+// Borne du bas
+cout << "Borne basse :" << endl;
+while ( !( cin >> borneBasse )
+	|| borneBasse < 1 || borneBasse > nbTrajets )
+{
+	cin.clear();
+	cin.ignore ( 1000, '\n' );
+	cout << "Saisissez des nombres entre 1 et " << nbTrajets
+		<< " !" << endl;
+}
+
+// Borne du haut
+cout << "Borne haute entre " << borneBasse << " et " << nbTrajets
+	<< endl;
+while ( !( cin >> borneHaute )
+	|| borneHaute < borneBasse || borneHaute > nbTrajets )
+{
+	cin.clear();
+	cin.ignore ( 1000, '\n' );
+	cout << "Saisissez un nombre entre " << borneBasse << " et "
+		<< nbTrajets << " !" << endl;
+}
+cin.ignore();	// On supprime le '\n' pour les lectures suivantes
+
+}// ----- Fin de optionIntervalle
