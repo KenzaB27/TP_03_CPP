@@ -384,7 +384,7 @@ void Catalogue::LectureTrajets()
 	//--- Verification de l'accessibilite du fichier
 	if( !fichier )
 	{
-		cout << "Le fichier n'est pas accessible !" << endl;
+		cerr << "Le fichier n'est pas accessible !" << endl;
 		fichier.close();
 		return;
 	}
@@ -518,7 +518,7 @@ void Catalogue::EcritureTrajets()
 	//--- Verification de l'accessibilite du fichier
 	if( !fichier )
 	{
-		cout << "Le fichier n'est pas accessible !" << endl;
+		cerr << "Le fichier n'est pas accessible !" << endl;
 		fichier.close();
 		return;
 	}
