@@ -624,7 +624,7 @@ void Catalogue::recupereTrajets ( ifstream & fichier, unsigned int nbTrajets )
 	cout << "Recuperation de tous les trajets :" << endl;
 
 	// On parcourt tous les trajets et on les ajoute si possible
-	for ( unsigned int i = 0; i < nbTrajets; i++ )
+	for ( unsigned int i = 0; i < nbTrajets && fichier.good() ; i++ )
 	{
 		Trajet * t = lectureTrajet ( fichier, ACCEPTEE );
 
@@ -666,7 +666,7 @@ void Catalogue::recupereTrajetsType ( ifstream & fichier,
 
 	// On lit les trajets et on recupere ceux qui marchent
 	//	(simple ou compose)
-	for ( unsigned int i = 0; i < nbTrajets; i++ )
+	for ( unsigned int i = 0; i < nbTrajets && fichier.good() ; i++ )
 	{
 		Trajet * t = lectureTrajet ( fichier, option );
 
@@ -744,7 +744,7 @@ void Catalogue::recupereTrajetsVille ( ifstream & fichier,
 	}
 
 	// On parcourt tous les trajets et on gardent ceux qui sont bons
-	for ( unsigned int i = 0; i < nbTrajets; i++ )
+	for ( unsigned int i = 0; i < nbTrajets && fichier.good(); i++ )
 	{
 		Trajet * t = lectureTrajet ( fichier, option, villeDepart,
 			villeArrivee );
@@ -800,11 +800,11 @@ void Catalogue::recupereTrajetsIntervalle ( ifstream & fichier,
 	cin.ignore();	// On supprime le '\n' pour les lectures suivantes
 
 	// On parcourt tous les trajets
-	for ( unsigned int i = 1; i <= nbTrajets; i++ )
+	for ( unsigned int i = 1; i <= borneHaute && fichier.good(); i++ )
 		//Les bornes de i sont decalees : le premier trajet doit avoir
 		//	un indice de 1
 	{
-		if ( i >= borneBasse && i <= borneHaute )
+		if ( i >= borneBasse )
 			// Dans les bornes : on sauvegarde
 		{
 			Trajet * t = lectureTrajet ( fichier, ACCEPTEE );
@@ -835,9 +835,15 @@ Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
 	OptionLecture optionLecture, string villeDepart, string villeArrivee )
 {
 	// Dans tous les cas, on lit le trajet
-	string chaineTrajet;
+	string chaineTrajet = "";
 	getline(fichier, chaineTrajet);
 	vector <string> params = decouperChaine ( chaineTrajet );
+
+	if( ! fichier.good() || params.size() != 4 )	// Erreur de lecture
+	{
+		cerr << "Erreur de lecture du trajet !" << endl;
+		return nullptr;
+	}
 
 	bool estCompose = params[ 0 ].compare ( "C" ) == 0;
 
@@ -1041,12 +1047,13 @@ void Catalogue::sauvegardeTrajetsVille ( ofstream & fichier )
 	string description= "";
 	bool existeTC = false ;
 	bool existeTS = false ;
-	// On parcourt tous les trajets et on gardent ceux qui sont bons
+	// On parcourt tous les trajets et on garde ceux qui sont bons
 	for ( unsigned int i = 0; i < (unsigned int)liste.GetNbTrajets(); i++ )
 	{
 		if (ecritureTrajet ( fichier , liste.GetTabTrajet()[i]->DescriptionTrajet(),
 										 option, villeDepart , villeArrivee))
 		{
+			cout << i << endl;
 			// composition des métadonnées
 			compteur ++ ;
 			string descriptionTr = liste.GetTabTrajet()[i]->DescriptionTrajet();
@@ -1229,20 +1236,31 @@ void Catalogue::saisirTexte ( char * destination, unsigned int tailleMax )
 }//--- Fin de saisirTexte
 
 
+void Catalogue::supprimerNonImprimable ( string & chaine )
+{
+	for ( string::iterator i = chaine.begin(); i <= chaine.end(); ++i )
+	{
+		if( *i != '\0' && ( ! isprint ( *i ) || *i < 0 ) )
+		// On verifie que *i n'est pas le caractere de fin de chaine
+		// ( non imprimable, mais attendu )
+		{
+			chaine.erase ( i - chaine.begin() );
+			--i;
+		}
+	}
+}//--- Fin de supprimerNonImprimable
+
+
 vector < string > Catalogue::decouperChaine ( string & chaine,
 		char separateur )
 {
 	vector < string > decoupage;
+	supprimerNonImprimable ( chaine );
 	string::iterator precCopieIterateur = chaine.begin();
 
-	for ( string::iterator i = chaine.begin(); i <= chaine.end(); i++)
+	for ( string::iterator i = chaine.begin(); i <= chaine.end(); ++i)
 	{
-		if ( ! isprint ( *i ) || *i <= 0 )
-			// Suppression des caracteres non imprimables
-		{
-			chaine.erase ( i - chaine.begin () );
-		}
-		else if ( *i == separateur)
+		if ( *i == separateur)
 		{
 			decoupage.emplace_back ( precCopieIterateur, i );
 			precCopieIterateur = i + 1;//On saute le separateur

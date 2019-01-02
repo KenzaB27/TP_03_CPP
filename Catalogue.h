@@ -265,6 +265,16 @@ protected :
     //  Aucun contrat.
 
 
+    static void supprimerNonImprimable ( string & chaine );
+    // Mode d'emploi :
+    //	Supprime tous les caracteres non imprimables de la chaine de caractere 
+    //		fournie en entree. La chaine en entree est modifiee !
+    //	chaine : la chaine de caractere qui contient les caracteres non
+    //		imprimables.
+    // Contrat :
+    //	Aucun contrat.
+
+
     static vector < string > decouperChaine ( string & chaine,
     	char separateur = '_' );
     // Mode d'emploi :
