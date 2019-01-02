@@ -918,52 +918,6 @@ void Catalogue::sauvegardeTrajetsIntervalle ( ofstream & fichier)
 
 }//--- Fin de recupereTrajetsIntervalle
 
-void Catalogue :: ecritureTrajetOption (ofstream & fichier , OptionLecEcr option,
-	string villeDepart, string villeArrivee , unsigned int debut ,
-	unsigned int  borneBasse , unsigned int  borneHaute )
-{
-	// variables relatifs à la composition des métadonnées
-	unsigned int compteur = 0 ; // compteur des trajets réellement sauvegardés
-	string description= "";
-	bool existeTC = false ;
-	bool existeTS = false ;
-
-	for ( unsigned int i = debut; i < (borneHaute+debut) && fichier.good(); i++ )
-		//Les bornes de i sont decalees : le premier trajet doit avoir
-		//	un indice de 1
-	{
-		if ( i >= borneBasse )
-			// Dans les bornes : on sauvegarde
-		{
-				if (ecritureTrajet (liste.GetTabTrajet()[i-debut]->DescriptionTrajet (),
-												 option, villeDepart , villeArrivee))
-				{
-					// composition des métadonnées
-					compteur ++ ;
-					string descriptionTr = liste.GetTabTrajet()[i-debut]->DescriptionTrajet();
-					vector <string> params = decouperChaine (descriptionTr);
-					if ( !existeTS )
-					{
-						existeTS = params[ 0 ].compare ( "S" ) == 0;
-					}
-					if ( !existeTC )
-					{
-						existeTC = params[ 0 ].compare ( "C" ) == 0;
-					}
-					description += liste.GetTabTrajet()[i-debut]->DescriptionTrajet () ;
-				}
-			}
-		}
-			if (!compteur)
-			{
-				cout << "Aucun trajet du catalogue ne correspond a vos criteres !" << endl ;
-				return ;
-			}
-			fichier << compteur << "_" << existeTS<< "_"	<<existeTC<< endl ;
-			fichier << description ;
-
-}// ------ Fin de ecritureTrajetOption
-
 
 bool Catalogue::ecritureTrajet ( string description ,
 	OptionLecEcr optionEcriture, string villeDepart, string villeArrivee )
@@ -1012,7 +966,55 @@ bool Catalogue::ecritureTrajet ( string description ,
 		}
 	}
 	return false;
-}//--- Fin de lectureTrajet
+}//--- Fin de ectritureTrajet
+
+
+void Catalogue :: ecritureTrajetOption (ofstream & fichier , OptionLecEcr option,
+	string villeDepart, string villeArrivee , unsigned int debut ,
+	unsigned int  borneBasse , unsigned int  borneHaute )
+{
+	// variables relatifs à la composition des métadonnées
+	unsigned int compteur = 0 ; // compteur des trajets réellement sauvegardés
+	string description= "";
+	bool existeTC = false ;
+	bool existeTS = false ;
+
+	for ( unsigned int i = debut; i < (borneHaute+debut) && fichier.good(); i++ )
+		//Les bornes de i sont decalees : le premier trajet doit avoir
+		//	un indice de 1
+	{
+		if ( i >= borneBasse )
+			// Dans les bornes : on sauvegarde
+		{
+				if (ecritureTrajet (liste.GetTabTrajet()[i-debut]->DescriptionTrajet (),
+												 option, villeDepart , villeArrivee))
+				{
+					// composition des métadonnées
+					compteur ++ ;
+					string descriptionTr = liste.GetTabTrajet()[i-debut]->DescriptionTrajet();
+					vector <string> params = decouperChaine (descriptionTr);
+					if ( !existeTS )
+					{
+						existeTS = params[ 0 ].compare ( "S" ) == 0;
+					}
+					if ( !existeTC )
+					{
+						existeTC = params[ 0 ].compare ( "C" ) == 0;
+					}
+					description += liste.GetTabTrajet()[i-debut]->DescriptionTrajet () ;
+				}
+			}
+		}
+			if (!compteur)
+			{
+				cout << "Aucun trajet du catalogue ne correspond a vos criteres !" << endl ;
+				return ;
+			}
+			fichier << compteur << "_" << existeTS<< "_"	<<existeTC<< endl ;
+			fichier << description ;
+
+}// ------ Fin de ecritureTrajetOption
+
 
 // -------- Autres méthodes ----------
 void Catalogue::freeTab ( char ** tab , int size )
@@ -1089,7 +1091,7 @@ vector < string > Catalogue::decouperChaine ( string & chaine,
 	return decoupage;	//On ne peut pas renvoyer de reference
 }//---- Fin de decouperChaine
 
-
+//---- Méthodes interface utilisateur 
 void Catalogue::optionUtilisateur (string lecOuEcr , bool existeTS , bool existeTC)
 {
 	//--- Options pour l'utilisateur
