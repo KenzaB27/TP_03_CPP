@@ -20,30 +20,17 @@
 using namespace std;
 //------------------------------------------------------------------ Constantes
 //----------------------------------------------------------------------- Types
-// Enumeration pour les options de lecture de la methode LectureTrajet
+// Enumeration pour les options de lecture et d'ecriture des methode
+// LectureTrajet et EcritureTrajets
 typedef enum {  ACCEPTEE,	// Creation de trajet dans tous les cas
 		REFUSEE,	// Pas de creation de trajet
-		TRAJET_SIMPLE,	// Creation d'un trajet s'il est simple
-		TRAJET_COMPOSE,	// Creation de trajet s'il est compose
-		VILLE_DEPART,	// Creation de trajet si la ville de depart correspond
-		VILLE_ARRIVEE,	// Creation de trajet si la ville d'arrivee correspond
-		VILLES// Creation de trajet si la ville de depart et d'arrivee correspondent
-	} OptionLecture;
-
-typedef enum
-	{
 		SAUVEGARDE_COMPLETE,//Sauvegarde de tous les trajets du catalogue courant
-	//	MODE_ECRITURE_TRUNC,// Sauvegarde du catalogue courant dans un fichier vide
-	//	MODE_LEC_ECRITURE, // Mise à jour d'un fichier déja existant - Mise à Jour
-		// des métadonnées et sauvegarde des trajets non existants - écriture en ate
-		TRAJET_SIMPLE_ECR,	// Sauvegarde du trajet s'il est simple
-		TRAJET_COMPOSE_ECR,// Sauvegarde du trajet s'il est compose
-		VILLE_DEPART_ECR,	//Sauvegarde du trajet si la ville de depart	correspond
-		VILLE_ARRIVEE_ECR,// Sauvegarde du trajet si la ville d'arrivee correspond
-		VILLES_ECR//Sauvegarde du trajet si la ville de depart et d'arrivee correspondent
-	} OptionEcriture;
-
-
+		TRAJET_SIMPLE,	// Creation ou sauvegarde d'un trajet s'il est simple
+		TRAJET_COMPOSE,	// Creation ou sauvegarde de trajet s'il est compose
+		VILLE_DEPART,	// Creation ou sauvegarde de trajet si la ville de depart correspond
+		VILLE_ARRIVEE,	// Creation ou sauvegarde de trajet si la ville d'arrivee correspond
+		VILLES// Creation ou sauvegarde de trajet si la ville de depart et d'arrivee correspondent
+	} OptionLecEcr;
 //-----------------------------------------------------------------------------
 // Rôle de la classe <Catalogue>
 //Implemente le catalogue de trajets : mon mode d'affichage - les méthodes d'Ajout
@@ -97,7 +84,7 @@ public :
     //		selections des trajets.
     // Contrat :
     //	Aucun contrat.
-    
+
 
     void EcritureTrajets();
     // Mode d'emploi :
@@ -171,8 +158,8 @@ protected :
     //		dans le fichier.
 
 
-    static Trajet * lectureTrajet ( ifstream & fichier, 
-    	OptionLecture optionLecture, string villeDepart = "" ,
+    static Trajet * lectureTrajet ( ifstream & fichier,
+    	OptionLecEcr optionLecture, string villeDepart = "" ,
 	string villeArrivee = "" );
     // Mode d'emploi :
     //	Permet de lire un trajet dans le fichier et de creer un objet associe
@@ -180,7 +167,7 @@ protected :
     //	Le trajet qui est lu est celui qui se situe a la position du curseur
     //		dans le fichier. Le trajet est lu dans tous les cas.
     //	fichier : le fichier qui contient le trajet a recuperer.
-    //	optionLecture : l'option de lecture sur le trajet (voir la description
+    //	OptionLecEcr : l'option de lecture sur le trajet (voir la description
     //		de l'enumeration en haut du fichier)
     //	villeDepart : specification de la ville de depart (uniquement pour
     //		VILLE_DEPART et VILLES).
@@ -193,7 +180,7 @@ protected :
     // Contrat :
     //	Le format du fichier doit etre correct et contenir un trajet lisible a
     //		la position du curseur.
-    
+
 
     //----------- Methodes de sauvegarde des trajets par criteres
     void sauvegardeTrajets ( ofstream & fichier);
@@ -234,15 +221,15 @@ protected :
     //  pour laisser place à la nouvelle sauvegarde.
 
 
-    static bool ecritureTrajet (  ofstream & fichier, string description, 
-    	OptionEcriture optionEcriture, string villeDepart = "" , 
+    static bool ecritureTrajet (string description,
+    	OptionLecEcr OptionEcriture, string villeDepart = "" ,
 	string villeArrivee = "" );
     // Mode d'emploi :
     //	Permet d'ecrire la descprition complète du catalogue courant conformément
     //	à l'option d'ecriture sélectionnée par l'utilisateur dans le fichier
 		// de sauvegarde
     //	fichier :  le fichier dans lequel la sauvegarde sera réalisée
-    //	optionEcriture : l'option d'écriture  dans le fichier (voir la description
+    //	OptionLecEcr : l'option d'écriture  dans le fichier (voir la description
     //		de l'enumeration en haut du fichier)
     //	villeDepart : specification de la ville de depart (uniquement pour
     //		VILLE_DEPART et VILLES).
@@ -267,7 +254,7 @@ protected :
 
     static void supprimerNonImprimable ( string & chaine );
     // Mode d'emploi :
-    //	Supprime tous les caracteres non imprimables de la chaine de caractere 
+    //	Supprime tous les caracteres non imprimables de la chaine de caractere
     //		fournie en entree. La chaine en entree est modifiee !
     //	chaine : la chaine de caractere qui contient les caracteres non
     //		imprimables.
@@ -288,19 +275,7 @@ protected :
     //	retour : un vecteur de string qui contient les informations decoupees.
     // Contrat :
     //	Aucun contrat.
-    
-    
-    string DescriptionCatalogue (OptionLecture optionEcriture);
-    // Mode d'emploi :
-    //	Fournit la description du catalogue courant:
-    //	La première ligne représente des métadonnées en cohérence avec l'option
-    //  d'ecriture choisie par l'utilisateur.
-    //	les lignes suivantes représentent la description de chacun des trajets
-    //  à sauvegarder.
-    // Contrat :
-    //	Aucun contrat.
-    
-    
+
     void freeTab(char ** tab , int size);
     // Mode d'emploi : permet de libérer les tableaux de chaines de caractères
     //		utilisée pour stocker les variables récupérées du flux cin
@@ -308,7 +283,7 @@ protected :
 
     //--------------------------------------------------- Attributs proteges --
     TabTrajet liste;  // Tableau des trajets du catalogue
-    
+
     bool presentTS ;  // booléen pour les tests d'existence des trajets simples
     		// dans le catalogue courant
     bool presentTC ; // booléen pour les tests d'existence des trajets composés

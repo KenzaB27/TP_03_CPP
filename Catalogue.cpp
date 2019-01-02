@@ -350,13 +350,13 @@ void Catalogue::MenuCatalogue(void)
 				break;
 			case 5:
 				// Ecriture des trajets dans le fichier
-				cout << "Sauvegarde des trajets dans un fichier " << endl << endl;
+				cout << endl << "Sauvegarde des trajets dans un fichier " << endl << endl;
 				EcritureTrajets();
 				break;
 			case 6:
 				// Lecture des trajets a partir d'un fichier
-				cout << "Lecture de trajets a partir"
-					<< " d'un fichier" << endl;
+				cout << endl << "Lecture de trajets a partir"
+					<< " d'un fichier" << endl << endl;
 				LectureTrajets();
 				break;
 			case 7:
@@ -474,19 +474,6 @@ void Catalogue::LectureTrajets()
 
 void Catalogue::EcritureTrajets()
 {
-/*cout << "Veuillez choisir le mode de sauvegarde du catalogue courant:" << endl ;
-	cout << "1. Sauvegarde du catalogue courant dans un fichier vide." << endl;
-	cout << "2. Mise à jour d'un fichier deja existant contenant d'autres trajets." << endl;
-
-	int choix = 0;
-	while ( ! ( cin >> choix ) || ( choix != 1 && choix != 2 ) )
-	{
-		cin.clear();
-		cin.ignore(1000, '\n');
-		cout << "Saisissez un chiffre entre 1 et 2 !" << endl;
-	}
-	OptionEcriture option = ( choix == 1 ) ? MODE_ECRITURE_TRUNC : MODE_LEC_ECRITURE;*/
-
 	// --- Vérifier si le catalogue est vide
 
 	if ( liste.GetNbTrajets () == 0 )
@@ -662,7 +649,7 @@ void Catalogue::recupereTrajetsType ( ifstream & fichier,
 		cin.ignore(1000, '\n');
 		cout << "Saisissez un chiffre entre 1 et 2 !" << endl;
 	}
-	OptionLecture option = ( choix == 1 ) ? TRAJET_SIMPLE : TRAJET_COMPOSE;
+	OptionLecEcr option = ( choix == 1 ) ? TRAJET_SIMPLE : TRAJET_COMPOSE;
 
 	// On lit les trajets et on recupere ceux qui marchent
 	//	(simple ou compose)
@@ -711,7 +698,7 @@ void Catalogue::recupereTrajetsVille ( ifstream & fichier,
 	cin.ignore();	//On elimine de '\n'
 
 	// Parametre de lecture du trajet
-	OptionLecture option = REFUSEE;
+	OptionLecEcr option = REFUSEE;
 	switch ( choix )
 	{
 		case 1:
@@ -832,7 +819,7 @@ void Catalogue::recupereTrajetsIntervalle ( ifstream & fichier,
 
 
 Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
-	OptionLecture optionLecture, string villeDepart, string villeArrivee )
+	OptionLecEcr optionLecture, string villeDepart, string villeArrivee )
 {
 	// Dans tous les cas, on lit le trajet
 	string chaineTrajet = "";
@@ -937,7 +924,7 @@ void Catalogue::sauvegardeTrajets ( ofstream & fichier)
 	// On parcourt tous les trajets et on ajoute leur descrpition dans le fichier
 	for ( unsigned int i = 0; i < (unsigned int)liste.GetNbTrajets(); i++ )
 	{
-		if (ecritureTrajet ( fichier , liste.GetTabTrajet()[i]->DescriptionTrajet (),
+		if (ecritureTrajet (liste.GetTabTrajet()[i]->DescriptionTrajet (),
 		 								 		SAUVEGARDE_COMPLETE))
 	 {
 		 fichier << liste.GetTabTrajet()[i]->DescriptionTrajet();
@@ -962,7 +949,7 @@ void Catalogue::sauvegardeTrajetsType ( ofstream & fichier)
 		cin.ignore(1000, '\n');
 		cout << "Saisissez un chiffre entre 1 et 2 !" << endl;
 	}
-	OptionEcriture option = ( choix == 1 ) ? TRAJET_SIMPLE_ECR : TRAJET_COMPOSE_ECR;
+	OptionLecEcr option = ( choix == 1 ) ? TRAJET_SIMPLE : TRAJET_COMPOSE;
 
 	unsigned int compteur = 0 ; // compteur des trajets réellement sauvegardés
 	string description= "" ;
@@ -970,7 +957,7 @@ void Catalogue::sauvegardeTrajetsType ( ofstream & fichier)
 	// de ceux qui correspondent aux critères
 	for ( unsigned int i = 0; i <(unsigned int) liste.GetNbTrajets(); i++ )
 	{
-		if (ecritureTrajet ( fichier , liste.GetTabTrajet()[i]->DescriptionTrajet (),
+		if (ecritureTrajet (liste.GetTabTrajet()[i]->DescriptionTrajet (),
 		 								 option))
 		{
 			compteur ++ ;
@@ -1012,17 +999,17 @@ void Catalogue::sauvegardeTrajetsVille ( ofstream & fichier )
 	cin.ignore();	//On elimine de '\n'
 
 	// Parametre de lecture du trajet
-	OptionEcriture option = SAUVEGARDE_COMPLETE;
+	OptionLecEcr option = SAUVEGARDE_COMPLETE;
 	switch ( choix )
 	{
 		case 1:
-			option = VILLE_DEPART_ECR;
+			option = VILLE_DEPART;
 			break;
 		case 2:
-			option = VILLE_ARRIVEE_ECR;
+			option = VILLE_ARRIVEE;
 			break;
 		case 3:
-			option = VILLES_ECR;
+			option = VILLES;
 			break;
 	}
 
@@ -1032,13 +1019,13 @@ void Catalogue::sauvegardeTrajetsVille ( ofstream & fichier )
 	char villeArrivee[ TAILLE_CHAR ];
 	villeArrivee[0] = '\0';
 
-	if ( option == VILLE_DEPART_ECR || option == VILLES_ECR )
+	if ( option == VILLE_DEPART || option == VILLES )
 	{
 		cout << "Ville de depart :" << endl;
 		saisirTexte( villeDepart, TAILLE_CHAR );
 	}
 
-	if ( option == VILLE_ARRIVEE_ECR || option == VILLES_ECR )
+	if ( option == VILLE_ARRIVEE || option == VILLES )
 	{
 		cout << "Ville d'arrivee :" << endl;
 		saisirTexte( villeArrivee, TAILLE_CHAR );
@@ -1050,7 +1037,7 @@ void Catalogue::sauvegardeTrajetsVille ( ofstream & fichier )
 	// On parcourt tous les trajets et on garde ceux qui sont bons
 	for ( unsigned int i = 0; i < (unsigned int)liste.GetNbTrajets(); i++ )
 	{
-		if (ecritureTrajet ( fichier , liste.GetTabTrajet()[i]->DescriptionTrajet(),
+		if (ecritureTrajet (liste.GetTabTrajet()[i]->DescriptionTrajet(),
 										 option, villeDepart , villeArrivee))
 		{
 			cout << i << endl;
@@ -1124,7 +1111,7 @@ void Catalogue::sauvegardeTrajetsIntervalle ( ofstream & fichier)
 		if ( i >= borneBasse && i <= borneHaute )
 			// Dans les bornes : on sauvegarde
 		{
-				if (ecritureTrajet ( fichier , liste.GetTabTrajet()[i-1]->DescriptionTrajet (),
+				if (ecritureTrajet (liste.GetTabTrajet()[i-1]->DescriptionTrajet (),
 												 SAUVEGARDE_COMPLETE))
 				{
 					// composition des métadonnées
@@ -1154,8 +1141,8 @@ void Catalogue::sauvegardeTrajetsIntervalle ( ofstream & fichier)
 }//--- Fin de recupereTrajetsIntervalle
 
 
-bool Catalogue::ecritureTrajet ( ofstream & fichier, string description ,
-	OptionEcriture optionEcriture, string villeDepart, string villeArrivee )
+bool Catalogue::ecritureTrajet ( string description ,
+	OptionLecEcr optionEcriture, string villeDepart, string villeArrivee )
 {
 	vector <string> params = decouperChaine (description);
 
@@ -1179,10 +1166,10 @@ bool Catalogue::ecritureTrajet ( ofstream & fichier, string description ,
 	if(estCompose)
 	{
 		if (optionEcriture == SAUVEGARDE_COMPLETE	||
-				optionEcriture == TRAJET_COMPOSE_ECR	||
-			 (optionEcriture == VILLE_DEPART_ECR && bonneVilleDepart ) ||
-			 (optionEcriture == VILLE_ARRIVEE_ECR&& bonneVilleArrivee) ||
-			 (optionEcriture == VILLES_ECR && bonneVilleDepart && bonneVilleArrivee )
+				optionEcriture == TRAJET_COMPOSE	||
+			 (optionEcriture == VILLE_DEPART && bonneVilleDepart ) ||
+			 (optionEcriture == VILLE_ARRIVEE&& bonneVilleArrivee) ||
+			 (optionEcriture == VILLES && bonneVilleDepart && bonneVilleArrivee )
 		 )	// Critere verifie = ecriture dans le fichier
 	 {
 			return true;
@@ -1191,10 +1178,10 @@ bool Catalogue::ecritureTrajet ( ofstream & fichier, string description ,
 	else
 	{
 		if (optionEcriture ==  SAUVEGARDE_COMPLETE	||
-				optionEcriture == TRAJET_SIMPLE_ECR	||
-		 	 (optionEcriture == VILLE_DEPART_ECR && bonneVilleDepart ) ||
-		   (optionEcriture == VILLE_ARRIVEE_ECR&& bonneVilleArrivee) ||
-		   (optionEcriture == VILLES_ECR && bonneVilleDepart && bonneVilleArrivee )
+				optionEcriture == TRAJET_SIMPLE	||
+		 	 (optionEcriture == VILLE_DEPART && bonneVilleDepart ) ||
+		   (optionEcriture == VILLE_ARRIVEE&& bonneVilleArrivee) ||
+		   (optionEcriture == VILLES && bonneVilleDepart && bonneVilleArrivee )
 		   )	// Critere verifie = creation d'objet
 		{
 			return true;
