@@ -401,7 +401,7 @@ void Catalogue::LectureTrajets()
 	if ( dec.size() != 3 )
 		//Format non respecte de l'entete
 	{
-		cout << "Le format du fichier n'est pas bon ou "
+		cerr << "Le format du fichier n'est pas bon ou "
 			<< "le fichier est vide" << endl;
 		fichier.close();
 		return;
@@ -472,7 +472,8 @@ void Catalogue::EcritureTrajets()
 
 	if ( liste.GetNbTrajets () == 0 )
 	{
-		cout <<"Le catalogue est vide, la sauvegarde est impossible!" << endl;
+		cerr << "Le catalogue est vide, la sauvegarde est impossible!"
+			<< endl;
 		return;
 	}
 
@@ -500,7 +501,7 @@ void Catalogue::EcritureTrajets()
 	//--- Choix du fichier
 	cout << endl ;
 	cout << "Veuillez saisir le chemin vers le fichier dans lequel vous "
-			 << "souhaitez sauvegarder le catalogue courant :" << endl;
+		 << "souhaitez sauvegarder le catalogue courant :" << endl;
 
 	string source;
 	getline(cin, source);	//getline pour les noms de fichier avec espaces
@@ -841,13 +842,16 @@ Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
 void Catalogue::sauvegardeTrajets ( ofstream & fichier)
 {
 	cout << "Sauvegarde de tous les trajets :" << endl;
-	fichier << liste.GetNbTrajets() << "_" << presentTS << "_" << presentTC << "\n";
+	fichier << liste.GetNbTrajets() << "_" << presentTS << "_" 
+		<< presentTC << "\n";
+	
 	// On parcourt tous les trajets et on ajoute leur descrpition dans le fichier
 	for ( unsigned int i = 0; i < (unsigned int)liste.GetNbTrajets()
 	&& fichier.good(); i++ )
 	{
 		if (ecritureTrajet (liste.GetTabTrajet()[i]->DescriptionTrajet (),
-		 								 		SAUVEGARDE_COMPLETE))
+		 			SAUVEGARDE_COMPLETE)
+		   )
 	 {
 		 fichier << liste.GetTabTrajet()[i]->DescriptionTrajet();
 	 }
@@ -860,13 +864,15 @@ void Catalogue::sauvegardeTrajetsType ( ofstream & fichier)
 	OptionLecEcr option = optionType ("Sauvegarde");
 	unsigned int compteur = 0 ; // compteur des trajets réellement sauvegardés
 	string description= "" ;
+
 	// On parcourt tous les trajets et on ajoute la descrpition dans le fichier
 	// de ceux qui correspondent aux critères
 	for ( unsigned int i = 0; i <(unsigned int) liste.GetNbTrajets()
 	 && fichier.good() ; i++ )
 	{
 		if (ecritureTrajet (liste.GetTabTrajet()[i]->DescriptionTrajet (),
-		 								 option))
+		 			 option)
+		   )
 		{
 			compteur ++ ;
 			description += liste.GetTabTrajet()[i]->DescriptionTrajet () ;
@@ -874,7 +880,8 @@ void Catalogue::sauvegardeTrajetsType ( ofstream & fichier)
 	}
 	if (!compteur)
 	{
-		cout << "Aucun trajet du catalogue ne correspond a vos criteres !" << endl ;
+		cout << "Aucun trajet du catalogue ne correspond a vos criteres !"
+			<< endl ;
 		return ;
 	}
 	bool existeTS = (option == TRAJET_SIMPLE )? 1 : 0  ;
