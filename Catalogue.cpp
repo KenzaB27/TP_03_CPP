@@ -15,7 +15,6 @@ pierre-yves.genest@insa-lyon.fr
 #include <fstream>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 //------------------------------------------------------ Includes personnels --
@@ -505,7 +504,7 @@ void Catalogue::EcritureTrajets()
 
 	string source;
 	getline(cin, source);	//getline pour les noms de fichier avec espaces
-  supprimerEspaceFin(source);
+	supprimerEspaceFin(source);
 
 	ofstream fichier;
 	fichier.open(source, ios::out | ios::trunc);
@@ -519,7 +518,7 @@ void Catalogue::EcritureTrajets()
 		return;
 	}
 
-	optionUtilisateur ("de sauvegarde", presentTS , presentTC);
+	optionUtilisateur ( "de sauvegarde", presentTS , presentTC);
 	bool choixJuste = false;
 	int choix;
 	while ( !choixJuste )
@@ -647,7 +646,7 @@ void Catalogue::recupereTrajetsType ( ifstream & fichier,
 void Catalogue::recupereTrajetsVille ( ifstream & fichier,
 	unsigned int nbTrajets )
 {
-	OptionLecEcr option =	optionVille ("Recuperation");
+	OptionLecEcr option = optionVille ("Recuperation");
 
 	// Villes de depart et d'arrivee
 	char villeDepart [ TAILLE_CHAR ];
@@ -696,6 +695,7 @@ void Catalogue::recupereTrajetsIntervalle ( ifstream & fichier,
 	unsigned int borneBasse = 0;
 	unsigned int borneHaute = 0;
 	optionIntervalle ( "Recuperation", borneBasse, borneHaute , nbTrajets);
+
 	// On parcourt tous les trajets
 	for ( unsigned int i = 1; i <= borneHaute && fichier.good(); i++ )
 		//Les bornes de i sont decalees : le premier trajet doit avoir
@@ -729,7 +729,7 @@ void Catalogue::recupereTrajetsIntervalle ( ifstream & fichier,
 
 
 Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
-	OptionLecEcr optionLecture, string villeDepart, string villeArrivee )
+	OptionLecEcr optionLecture, string villeDepart, string villeArrivee)
 {
 	// Dans tous les cas, on lit le trajet
 	string chaineTrajet = "";
@@ -745,7 +745,7 @@ Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
 	bool estCompose = params[ 0 ].compare ( "C" ) == 0;
 
 	supprimerEspaceFin (villeDepart);
-  supprimerEspaceFin (villeArrivee);
+	supprimerEspaceFin (villeArrivee);
 
 	// Comparaison des villes sans soucis de la casse des lettres
 	char * vDepUpper = TrajetSimple::toUpper ( villeDepart.c_str() );
@@ -857,7 +857,7 @@ void Catalogue::sauvegardeTrajets ( ofstream & fichier)
 
 void Catalogue::sauvegardeTrajetsType ( ofstream & fichier)
 {
-	OptionLecEcr option = optionType ("Sauvegarde") ;
+	OptionLecEcr option = optionType ("Sauvegarde");
 	unsigned int compteur = 0 ; // compteur des trajets réellement sauvegardés
 	string description= "" ;
 	// On parcourt tous les trajets et on ajoute la descrpition dans le fichier
@@ -925,7 +925,8 @@ void Catalogue::sauvegardeTrajetsIntervalle ( ofstream & fichier)
 
 
 bool Catalogue::ecritureTrajet ( string description ,
-	OptionLecEcr optionEcriture, string villeDepart, string villeArrivee )
+	OptionLecEcr optionEcriture, string villeDepart, 
+	string villeArrivee )
 {
 	vector <string> params = decouperChaine (description);
 
@@ -976,9 +977,9 @@ bool Catalogue::ecritureTrajet ( string description ,
 }//--- Fin de ectritureTrajet
 
 
-void Catalogue :: ecritureTrajetOption (ofstream & fichier , OptionLecEcr option,
-	string villeDepart, string villeArrivee , unsigned int debut ,
-	unsigned int  borneBasse , unsigned int  borneHaute )
+void Catalogue::ecritureTrajetOption ( ofstream & fichier, OptionLecEcr option,
+	const string & villeDepart, const string & villeArrivee, 
+	unsigned int debut, unsigned int  borneBasse, unsigned int  borneHaute )
 {
 	// variables relatifs à la composition des métadonnées
 	unsigned int compteur = 0 ; // compteur des trajets réellement sauvegardés
@@ -1025,11 +1026,13 @@ void Catalogue :: ecritureTrajetOption (ofstream & fichier , OptionLecEcr option
 // --------------Fin des méthodes de sauvegarde ------------
 
 //---- Méthodes interface utilisateur ------
-
-void Catalogue::optionUtilisateur (string lecOuEcr , bool existeTS , bool existeTC)
+void Catalogue::optionUtilisateur ( const string & lecOuEcr, 
+	bool existeTS, bool existeTC )
 {
 	//--- Options pour l'utilisateur
-	cout << "Choisissez l'option pour "<<lecOuEcr<<" des trajets :" << endl;
+	cout << "Choisissez l'option pour " << lecOuEcr << " des trajets :" 
+		<< endl;
+
 	cout << "1. Tous les trajets" << endl;
 	if( existeTC && existeTS )
 	{
@@ -1041,7 +1044,7 @@ void Catalogue::optionUtilisateur (string lecOuEcr , bool existeTS , bool existe
 }// ----- Fin de optionUtilisateur
 
 
-OptionLecEcr Catalogue::optionType(string lecOuEcr )
+OptionLecEcr Catalogue::optionType ( const string & lecOuEcr )
 {
 	int choix=0;
 	cout << endl;
@@ -1057,11 +1060,11 @@ OptionLecEcr Catalogue::optionType(string lecOuEcr )
 		cout << "Saisissez un chiffre entre 1 et 2 !" << endl;
 	}
 	OptionLecEcr option = ( choix == 1 ) ? TRAJET_SIMPLE : TRAJET_COMPOSE;
-	return option ;
+	return option;
 }// ----- Fin de optionType
 
 
-OptionLecEcr Catalogue::optionVille ( string lecOuEcr)
+OptionLecEcr Catalogue::optionVille ( const string & lecOuEcr )
 {
 	cout << endl ;
 	cout << lecOuEcr << " du trajet en fonction des villes de depart"
@@ -1101,38 +1104,39 @@ OptionLecEcr Catalogue::optionVille ( string lecOuEcr)
 }// ------- Fin de optionVille
 
 
-void Catalogue::optionIntervalle ( string lecOuEcr, unsigned int & borneBasse ,
-	 unsigned int & borneHaute , unsigned int nbTrajets)
+void Catalogue::optionIntervalle ( const string & lecOuEcr,
+	unsigned int & borneBasse, unsigned int & borneHaute,
+	unsigned int nbTrajets)
 {
-cout << lecOuEcr << " des trajets suivant un intervalle" << endl;
-cout << "Saisissez des nombres entre 1 et " << nbTrajets << endl;
-// Borne du bas
-cout << "Borne basse :" << endl;
-while ( !( cin >> borneBasse )
-	|| borneBasse < 1 || borneBasse > nbTrajets )
-{
-	cin.clear();
-	cin.ignore ( 1000, '\n' );
-	cout << "Saisissez des nombres entre 1 et " << nbTrajets
-		<< " !" << endl;
-}
+	cout << lecOuEcr << " des trajets suivant un intervalle" << endl;
+	cout << "Saisissez des nombres entre 1 et " << nbTrajets << endl;
 
-// Borne du haut
-cout << "Borne haute entre " << borneBasse << " et " << nbTrajets
-	<< endl;
-while ( !( cin >> borneHaute )
-	|| borneHaute < borneBasse || borneHaute > nbTrajets )
-{
-	cin.clear();
-	cin.ignore ( 1000, '\n' );
-	cout << "Saisissez un nombre entre " << borneBasse << " et "
-		<< nbTrajets << " !" << endl;
-}
-cin.ignore();	// On supprime le '\n' pour les lectures suivantes
+	// Borne du bas
+	cout << "Borne basse :" << endl;
+	while ( !( cin >> borneBasse )
+		|| borneBasse < 1 || borneBasse > nbTrajets )
+	{
+		cin.clear();
+		cin.ignore ( 1000, '\n' );
+		cout << "Saisissez des nombres entre 1 et " << nbTrajets
+			<< " !" << endl;
+	}
 
+	// Borne du haut
+	cout << "Borne haute entre " << borneBasse << " et " << nbTrajets
+		<< endl;
+	while ( !( cin >> borneHaute )
+		|| borneHaute < borneBasse || borneHaute > nbTrajets )
+	{
+		cin.clear();
+		cin.ignore ( 1000, '\n' );
+		cout << "Saisissez un nombre entre " << borneBasse << " et "
+			<< nbTrajets << " !" << endl;
+	}
+	cin.ignore();	// On supprime le '\n' pour les lectures suivantes
 }// ----- Fin de optionIntervalle
 
-// --------------Fin des méthodes d'inteerface utilisateur------------
+// --------------Fin des méthodes d'interface utilisateur------------
 
 // -------- Autres méthodes ----------
 void Catalogue::freeTab ( char ** tab , int size )
@@ -1168,13 +1172,13 @@ void Catalogue::saisirTexte ( char * destination, unsigned int tailleMax )
 }//--- Fin de saisirTexte
 
 
-void Catalogue::supprimerEspaceFin (string & chaine )
+void Catalogue::supprimerEspaceFin ( string & chaine )
 {
-	string::iterator end = chaine.end() ;
-	end--;
-	if (*end == ' ')
+	string::iterator end = chaine.end() - 1 ;
+	while ( end >= chaine.begin() && *end == ' ' )
 	{
 		chaine.erase(end);
+		--end;
 	}
 }//--- Fin de supprimerEspaceFin
 

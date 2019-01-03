@@ -158,8 +158,8 @@ protected :
     //		dans le fichier.
 
 
-    Trajet * lectureTrajet ( ifstream & fichier,
-    	OptionLecEcr optionLecture, string villeDepart = "" ,
+    Trajet * lectureTrajet ( ifstream & fichier, OptionLecEcr optionLecture,
+    	string villeDepart = "" ,
 	string villeArrivee = "" );
     // Mode d'emploi :
     //	Permet de lire un trajet dans le fichier et de creer un objet associe
@@ -183,7 +183,7 @@ protected :
 
 
     //----------- Methodes de sauvegarde des trajets par criteres
-    void sauvegardeTrajets ( ofstream & fichier);
+    void sauvegardeTrajets ( ofstream & fichier );
     // Mode d'emploi :
     //	Sauvegarde tous les trajets (simple et composes) du catalogue courant
     //	fichier : le fichier dans lequel la sauvegarde sera réalisée
@@ -221,7 +221,7 @@ protected :
     //  pour laisser place à la nouvelle sauvegarde.
 
 
-    static bool ecritureTrajet (string description,
+    static bool ecritureTrajet ( string description,
     	OptionLecEcr OptionEcriture, string villeDepart = "" ,
 	string villeArrivee = "" );
     // Mode d'emploi :
@@ -238,78 +238,83 @@ protected :
     // Contrat :
     //	Le fichier doit etre vide, le cas échéant, son contenu sera écrasé
     //  pour laisser place à la nouvelle sauvegarde.
+    
+    
+    void ecritureTrajetOption (ofstream & fichier , OptionLecEcr option, 
+    	const string & villeDepart, const string & villeArrive , 
+	unsigned int debut ,unsigned int  borneBasse , 
+	unsigned int  borneHaute );
+    // Mode d'emploi :
+    //	permet d'ecrire dans le fichier de sauvegarde la descrpition
+    // des différents trajets respectant l'option d'écriture pour la sélection
+    // suivant une ville de départ et ou d'arrivée ou la sélection selon un
+    // intervalle
+    //	fichier :  le fichier dans lequel la sauvegarde sera réalisée
+    //	OptionEcriture : l'option d'écriture  dans le fichier (voir la description
+    //		de l'enumeration en haut du fichier)
+    //	villeDepart : specification de la ville de depart (uniquement pour
+    //		VILLE_DEPART et VILLES).
+    //	villeArrivee : specification de la ville d'arrivee (uniquement pour
+    //		VILLE_ARRIVEE et VILLES).
+    //  borneBasse : la borne inférieure de l'intervalle de sélection
+    //  borneHaute : la borne supérieure de l'intervalle de sélection
+    //  debut : entier non signé representant le début de boucle = 0 pour
+    //  critère de villes et =1 pour critère intervalle
+    // Contrat :
+    //	Le fichier doit etre vide, le cas échéant, son contenu sera écrasé
+    //  pour laisser place à la nouvelle sauvegarde.
+    
 
-void ecritureTrajetOption (ofstream & fichier , OptionLecEcr option,
-	string villeDepart, string villeArrive , unsigned int debut ,
-	unsigned int  borneBasse , unsigned int  borneHaute );
-	// Mode d'emploi :
-	//	permet d'ecrire dans le fichier de sauvegarde la descrpition
-	// des différents trajets respectant l'option d'écriture pour la sélection
-	// suivant une ville de départ et ou d'arrivée ou la sélection selon un
-	// intervalle
-	//	fichier :  le fichier dans lequel la sauvegarde sera réalisée
-	//	OptionEcriture : l'option d'écriture  dans le fichier (voir la description
-	//		de l'enumeration en haut du fichier)
-	//	villeDepart : specification de la ville de depart (uniquement pour
-	//		VILLE_DEPART et VILLES).
-	//	villeArrivee : specification de la ville d'arrivee (uniquement pour
-	//		VILLE_ARRIVEE et VILLES).
-	//  borneBasse : la borne inférieure de l'intervalle de sélection
-	//  borneHaute : la borne supérieure de l'intervalle de sélection
-	//  debut : entier non signé representant le début de boucle = 0 pour
-	//  critère de villes et =1 pour critère intervalle
-	// Contrat :
-	//	Le fichier doit etre vide, le cas échéant, son contenu sera écrasé
-	//  pour laisser place à la nouvelle sauvegarde.
-
-	void optionUtilisateur (string lecOuEcr , bool existeTS, 	bool existeTC ) ;
-	 // Mode d'emploi : implémente l'interface des options d'écriture ou de
-	 // lecture offertes à lutilisateur
-	 //	lecOuEcr : un string qui précise s'il s'agit d'un chargement ou
-	 // d'une sauvegarde
-	 // existeTS : bool qui indique la presence ou non de trajet simple dans un
-	 // fichier (le cas de lecture) ou dans un catalogue(cas d'ecriture),
-	 // existeTC : bool qui indique la presence ou non de trajet composé dans un
-	 // fichier (cas de lecture) ou dans un catalogue (cas d'ecriture),
-	 // Contrat :
-	 //	Aucun contrat.
-
-
-	 OptionLecEcr optionType(string lecOuEcr ) ;
-	 // Mode d'emploi : implémente l'interface des options d'écriture ou de
-	 // lecture offertes à lutilisateur selon le type de trajets
-	 //	lecOuEcr : un string qui précise s'il s'agit d'une récupération ou
-	 // d'une sauvegarde
-	 // OptionLecEcr : retourne l'option d'écriture ou  de lecture choisie
-	 // par l'utilisateur
-	 // Contrat :
-	 //	Aucun contrat.
-
-	 OptionLecEcr optionVille ( string lecOuEcr );
-		// Mode d'emploi : implémente l'interface des options d'écriture ou de
-		// lecture offertes à lutilisateur selon le choix des villes
-		//	lecOuEcr : un string qui précise s'il s'agit d'une récupération ou
-		// d'une sauvegarde
-		// OptionLecEcr : retourne l'option d'écriture ou  de lecture choisie
-		// par l'utilisateur
-		// Contrat :
-		//	Aucun contrat.
-
-		void optionIntervalle ( string lecOuEcr, unsigned int & borneBasse ,
+    void optionUtilisateur ( const string & lecOuEcr, bool existeTS,
+    	bool existeTC ) ;
+    // Mode d'emploi : implémente l'interface des options d'écriture ou de
+    // lecture offertes à lutilisateur
+    //	lecOuEcr : un string qui précise s'il s'agit d'un chargement ou
+    // d'une sauvegarde
+    // existeTS : bool qui indique la presence ou non de trajet simple dans un
+    // fichier (le cas de lecture) ou dans un catalogue(cas d'ecriture),
+    // existeTC : bool qui indique la presence ou non de trajet composé dans un
+    // fichier (cas de lecture) ou dans un catalogue (cas d'ecriture),
+    // Contrat :
+    //	Aucun contrat.
+    
+    
+    OptionLecEcr optionType( const string & lecOuEcr );
+    // Mode d'emploi : implémente l'interface des options d'écriture ou de
+    // lecture offertes à lutilisateur selon le type de trajets
+    //	lecOuEcr : un string qui précise s'il s'agit d'une récupération ou
+    // d'une sauvegarde
+    // OptionLecEcr : retourne l'option d'écriture ou  de lecture choisie
+    // par l'utilisateur
+    // Contrat :
+    //	Aucun contrat.
+    
+    OptionLecEcr optionVille ( const string & lecOuEcr );
+    // Mode d'emploi : implémente l'interface des options d'écriture ou de
+    // lecture offertes à lutilisateur selon le choix des villes
+    //	lecOuEcr : un string qui précise s'il s'agit d'une récupération ou
+    // d'une sauvegarde
+    // OptionLecEcr : retourne l'option d'écriture ou  de lecture choisie
+    // par l'utilisateur
+    // Contrat :
+    //	Aucun contrat.
+    
+    
+    void optionIntervalle ( const string & lecOuEcr, unsigned int & borneBasse,
 			 unsigned int & borneHaute , unsigned int nbTrajets) ;
-		// Mode d'emploi : implémente l'interface des options d'écriture ou de
-		// lecture offertes à lutilisateur selon le choix d'intervalle de sélection
-		//	lecOuEcr : un string qui précise s'il s'agit d'une récupération ou
-		// d'une sauvegarde
-		// borneBasse: entier non signée pour récupérer la borne inférieure de
-		// l'intervalle de sélection -- passage par référence
-		// borneHaute: entier non signée pour récupérer la borne supérieure de
-		// l'intervalle de sélection -- passage par référence
-		//  nbTrajets: entier non signé représentant le nombre de trajets dans
-		// le fichier de lecture ou dans le catalogue courant selon le cas
-		// d'écriture ou de lecture
-		// Contrat :
-		//	Aucun contrat.
+    // Mode d'emploi : implémente l'interface des options d'écriture ou de
+    // lecture offertes à lutilisateur selon le choix d'intervalle de sélection
+    //	lecOuEcr : un string qui précise s'il s'agit d'une récupération ou
+    // d'une sauvegarde
+    // borneBasse: entier non signée pour récupérer la borne inférieure de
+    // l'intervalle de sélection -- passage par référence
+    // borneHaute: entier non signée pour récupérer la borne supérieure de
+    // l'intervalle de sélection -- passage par référence
+    //  nbTrajets: entier non signé représentant le nombre de trajets dans
+    // le fichier de lecture ou dans le catalogue courant selon le cas
+    // d'écriture ou de lecture
+    // Contrat :
+    //	Aucun contrat.
 
 
     static void saisirTexte ( char * destination, unsigned int tailleMax );
@@ -321,13 +326,15 @@ void ecritureTrajetOption (ofstream & fichier , OptionLecEcr option,
     // Contrat :
     //  Aucun contrat.
 
-    static void supprimerEspaceFin (string & chaine ) ;
-		// Mode d'emploi :
-		//	Supprime l'espace en fin de chaine s'il existe
-		//	chaine : la chaine de caractere qui peut contenir un espace inutile
-		//  à sa fin
-		// Contrat :
-		//	Aucun contrat.
+
+    static void supprimerEspaceFin ( string & chaine );
+    // Mode d'emploi :
+    //	Supprime les espaces en fin de chaine s'ils existent
+    //	chaine : la chaine de caractere qui peut contenir des espaces inutiles
+    //  à sa fin
+    // Contrat :
+    //	Aucun contrat.
+
 
     static void supprimerNonImprimable ( string & chaine );
     // Mode d'emploi :
@@ -357,7 +364,7 @@ void ecritureTrajetOption (ofstream & fichier , OptionLecEcr option,
     void freeTab(char ** tab , int size);
     // Mode d'emploi : permet de libérer les tableaux de chaines de caractères
     //		utilisée pour stocker les variables récupérées du flux cin
-		// Contrat :
+    // Contrat :
     //	Aucun contrat.
 
 
