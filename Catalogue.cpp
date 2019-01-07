@@ -880,7 +880,7 @@ Trajet * Catalogue::lectureTrajet ( ifstream & fichier,
 // --------------Fin des méthodes de lecture ------------
 
 // ------- Méthodes de sauvegarde ---------
-void Catalogue::sauvegardeTrajets ( ofstream & fichier)
+void Catalogue::sauvegardeTrajets ( ofstream & fichier) const
 {
 	cout << "Sauvegarde de tous les trajets :" << endl;
 	fichier << liste.GetNbTrajets() << "_" << presentTS << "_" 
@@ -900,7 +900,7 @@ void Catalogue::sauvegardeTrajets ( ofstream & fichier)
 }//--- Fin de sauvegardeTrajets
 
 
-void Catalogue::sauvegardeTrajetsType ( ofstream & fichier)
+void Catalogue::sauvegardeTrajetsType ( ofstream & fichier) const
 {
 	OptionLecEcr option = optionType ("Sauvegarde");
 	unsigned int compteur = 0 ; // compteur des trajets réellement sauvegardés
@@ -932,14 +932,14 @@ void Catalogue::sauvegardeTrajetsType ( ofstream & fichier)
 }//--- Fin de sauvegardeTrajetsType
 
 
-void Catalogue::sauvegardeTrajetsVille ( ofstream & fichier )
+void Catalogue::sauvegardeTrajetsVille ( ofstream & fichier ) const
 {
 	OptionLecEcr option =	optionVille ( "Sauvegarde");
 
 	// Villes de depart et d'arrivee
-	char villeDepart [ TAILLE_CHAR ];
+	char * villeDepart = new char[ TAILLE_CHAR ];
 	villeDepart[0] = '\0';
-	char villeArrivee[ TAILLE_CHAR ];
+	char * villeArrivee = new char[ TAILLE_CHAR ];
 	villeArrivee[0] = '\0';
 
 	if ( option == VILLE_DEPART || option == VILLES )
@@ -954,13 +954,21 @@ void Catalogue::sauvegardeTrajetsVille ( ofstream & fichier )
 		saisirTexte( villeArrivee, TAILLE_CHAR );
 	}
 
-	ecritureTrajetOption (fichier , option, villeDepart, villeArrivee,
-  	0 , 0 ,(unsigned int)liste.GetNbTrajets());
+	// Mise en majuscule des villes
+	char * villeDepartUpper = TrajetSimple::toUpper ( villeDepart );
+	char * villeArriveeUpper = TrajetSimple::toUpper ( villeArrivee );
 
+	ecritureTrajetOption ( fichier , option, villeDepartUpper,
+		villeArriveeUpper, 0 , 0 ,(unsigned int)liste.GetNbTrajets());
+
+	delete[] villeArrivee;
+	delete[] villeDepart;
+	delete[] villeDepartUpper;
+	delete[] villeArriveeUpper;
 }//--- Fin de sauvegardeTrajetsVille
 
 
-void Catalogue::sauvegardeTrajetsIntervalle ( ofstream & fichier)
+void Catalogue::sauvegardeTrajetsIntervalle ( ofstream & fichier) const
 {
 	unsigned int borneBasse = 0;
 	unsigned int borneHaute = 0;
@@ -973,33 +981,38 @@ void Catalogue::sauvegardeTrajetsIntervalle ( ofstream & fichier)
 
 
 bool Catalogue::ecritureTrajet ( string description ,
-	OptionLecEcr optionEcriture, string villeDepart, 
-	string villeArrivee )
+	OptionLecEcr optionEcriture, const char * villeDepart, 
+	const char * villeArrivee )
 {
 	string * params = nullptr;
 	decouperChaine (params, description);
 
 	bool estCompose = params[ 0 ].compare ( "C" ) == 0;
 
-	supprimerEspaceFin (villeDepart);
-  	supprimerEspaceFin (villeArrivee);
 	// Comparaison des villes sans soucis de la casse des lettres
-	char * vDepUpper = TrajetSimple::toUpper ( villeDepart.c_str() );
 	char * paramsVDepUpper = TrajetSimple::toUpper ( params[1].c_str() );
-	char * vArrUpper = TrajetSimple::toUpper ( villeArrivee.c_str() );
 	char * paramsVArrUpper = TrajetSimple::toUpper ( params[2].c_str() );
 
-	bool bonneVilleDepart = strcmp ( vDepUpper, paramsVDepUpper ) == 0;
-	bool bonneVilleArrivee = strcmp ( vArrUpper, paramsVArrUpper ) == 0;
-
-	delete[] vDepUpper;
-	delete[] vArrUpper;
+	bool bonneVilleDepart;
+	bool bonneVilleArrivee;
+	if ( villeDepart != nullptr && villeArrivee != nullptr)
+		// On effectue la comparaison que si les valeurs ont ete renseignees
+	{
+		bonneVilleDepart = strcmp ( villeDepart, paramsVDepUpper ) == 0;
+		bonneVilleArrivee = strcmp ( villeArrivee, paramsVArrUpper ) == 0;
+	}
+	else
+	{
+		bonneVilleDepart = false;
+		bonneVilleArrivee = false;
+	}
+	
 	delete[] paramsVDepUpper;
 	delete[] paramsVArrUpper;
 	delete[] params;
 
 	// Gestion des differents cas
-	if(estCompose)
+	if( estCompose )
 	{
 		if (optionEcriture == SAUVEGARDE_COMPLETE	||
 				optionEcriture == TRAJET_COMPOSE	||
@@ -1028,8 +1041,8 @@ bool Catalogue::ecritureTrajet ( string description ,
 
 
 void Catalogue::ecritureTrajetOption ( ofstream & fichier, OptionLecEcr option,
-	const string & villeDepart, const string & villeArrivee, 
-	unsigned int debut, unsigned int  borneBasse, unsigned int  borneHaute )
+	const char * villeDepart, const char * villeArrivee, unsigned int debut, 
+	unsigned int  borneBasse, unsigned int  borneHaute ) const
 {
 	// variables relatifs à la composition des métadonnées
 	unsigned int compteur = 0 ; // compteur des trajets réellement sauvegardés
@@ -1044,8 +1057,7 @@ void Catalogue::ecritureTrajetOption ( ofstream & fichier, OptionLecEcr option,
 		if ( i >= borneBasse )
 			// Dans les bornes : on sauvegarde
 		{
-				if (ecritureTrajet (liste.GetTabTrajet()[i-debut]->DescriptionTrajet (),
-												 option, villeDepart , villeArrivee))
+				if (ecritureTrajet (liste.GetTabTrajet()[i-debut]->DescriptionTrajet (), option, villeDepart , villeArrivee))
 				{
 					// composition des métadonnées
 					compteur ++ ;
@@ -1079,7 +1091,7 @@ void Catalogue::ecritureTrajetOption ( ofstream & fichier, OptionLecEcr option,
 
 //---- Méthodes interface utilisateur ------
 void Catalogue::optionUtilisateur ( const string & lecOuEcr, 
-	bool existeTS, bool existeTC )
+	bool existeTS, bool existeTC ) const
 {
 	//--- Options pour l'utilisateur
 	cout << "Choisissez l'option pour " << lecOuEcr << " des trajets :" 
@@ -1096,7 +1108,7 @@ void Catalogue::optionUtilisateur ( const string & lecOuEcr,
 }// ----- Fin de optionUtilisateur
 
 
-OptionLecEcr Catalogue::optionType ( const string & lecOuEcr )
+OptionLecEcr Catalogue::optionType ( const string & lecOuEcr ) const
 {
 	int choix=0;
 	cout << endl;
@@ -1116,7 +1128,7 @@ OptionLecEcr Catalogue::optionType ( const string & lecOuEcr )
 }// ----- Fin de optionType
 
 
-OptionLecEcr Catalogue::optionVille ( const string & lecOuEcr )
+OptionLecEcr Catalogue::optionVille ( const string & lecOuEcr ) const
 {
 	cout << endl ;
 	cout << lecOuEcr << " du trajet en fonction des villes de depart"
@@ -1158,7 +1170,7 @@ OptionLecEcr Catalogue::optionVille ( const string & lecOuEcr )
 
 void Catalogue::optionIntervalle ( const string & lecOuEcr,
 	unsigned int & borneBasse, unsigned int & borneHaute,
-	unsigned int nbTrajets)
+	unsigned int nbTrajets) const
 {
 	cout << lecOuEcr << " des trajets suivant un intervalle" << endl;
 	cout << "Saisissez des nombres entre 1 et " << nbTrajets << endl;
