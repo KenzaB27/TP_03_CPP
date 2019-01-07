@@ -159,8 +159,8 @@ protected :
 
 
     Trajet * lectureTrajet ( ifstream & fichier, OptionLecEcr optionLecture,
-    	string villeDepart = "" ,
-	string villeArrivee = "" );
+    	const char * villeDepart = nullptr,
+        const char * villeArrivee = nullptr );
     // Mode d'emploi :
     //	Permet de lire un trajet dans le fichier et de creer un objet associe
     //		a ce trajet suivant l'option de lecture renseignee
@@ -170,9 +170,9 @@ protected :
     //	OptionLecEcr : l'option de lecture sur le trajet (voir la description
     //		de l'enumeration en haut du fichier)
     //	villeDepart : specification de la ville de depart (uniquement pour
-    //		VILLE_DEPART et VILLES).
+    //		VILLE_DEPART et VILLES), en majuscules.
     //	villeArrivee : specification de la ville d'arrivee (uniquement pour
-    //		VILLE_ARRIVEE et VILLES)
+    //		VILLE_ARRIVEE et VILLES), en majuscules.
     //	Trajet * : le pointeur vers le trajet cree. La destruction est a la
     //		charge du client.
     //		Si aucun trajet n'est cree (option non verifiese, on renvoie
@@ -346,17 +346,21 @@ protected :
     //	Aucun contrat.
 
 
-    static vector < string > decouperChaine ( string & chaine,
+    static int decouperChaine ( string * & decoupage, string & chaine,
     	char separateur = '_' );
     // Mode d'emploi :
     //	Permet de decouper une chaine de caracteres en plusieurs morceaux,
     //		suivant un caractere separateur.
+    //  decoupage : Attention pointeur de sortie !!! Tableau qui contient 
+    //      les morceaux decoupes. Si la taille du tableau depasse 4 retourne 
+    //      nullptr.
     //	chaine : la chaine de caracteres a decouper. La chaine est modifiee
     //		pendant la methode, on supprime tous les caracteres
     //		non imprimables \n, \r ...
     //	separateur : le caractere qui separer les morceaux (il ne sera pas
     //		recopie)
-    //	retour : un vecteur de string qui contient les informations decoupees.
+    //	retour : entier qui vaut la taille du tableau decoupage. Si la taille
+    //      vaut plus que 4, retourne -1.
     // Contrat :
     //	Aucun contrat.
 
